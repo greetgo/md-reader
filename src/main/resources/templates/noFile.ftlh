@@ -7,6 +7,9 @@
   <title>Document</title>
 </head>
 <body>
-Show ${uri}
+<div>
+  No File ${uriNoBorderSlash}
+</div>
+
 </body>
 </html>
