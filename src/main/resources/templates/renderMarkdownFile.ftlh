@@ -1,21 +1,17 @@
 <#import "base.ftl" as base>
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-<div>
-  Show ${filePath}
-</div>
-<div class="markdown">
-    <#outputformat "plainText">
-        ${html}
-    </#outputformat>
-</div>
-</body>
-</html>
+<@base.layout>
+    <@base.header/>
+  <div class="content">
+    <div class="left">
+        <@base.toc/>
+    </div>
+    <div class="main">
+      <div class="markdown">
+          <#outputformat "plainText">
+              ${html}
+          </#outputformat>
+      </div>
+    </div>
+  </div>
+    <@base.footer/>
+</@base.layout>

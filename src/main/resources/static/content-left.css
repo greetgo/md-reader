@@ -1,0 +1,53 @@
+
+.content .left {
+  padding-top: 2.5rem;
+  padding-right: 1rem;
+}
+
+.content .left .caption {
+  line-height: 135%;
+}
+
+.content .left .caption a {
+  text-decoration: none;
+}
+
+.content .left .caption a:hover {
+  text-decoration: underline;
+}
+
+.content .left .selected {
+  font-weight: bold;
+}
+
+.content .left .level1 {
+  padding-left: 0;
+}
+
+.content .left .level2 {
+  padding-left: 0.5rem;
+}
+
+.content .left .level3 {
+  padding-left: 1rem;
+}
+
+.content .left .level4 {
+  padding-left: 1.5rem;
+}
+
+.content .left .level5 {
+  padding-left: 2rem;
+}
+
+.content .left .level6 {
+  padding-left: 2.5rem;
+}
+
+.content .left .level7 {
+  padding-left: 3rem;
+}
+
+.content .left .level8 {
+  padding-left: 3.5rem;
+}

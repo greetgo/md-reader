@@ -1,0 +1,9 @@
+
+.content {
+  display: flex;
+  flex-direction: row;
+}
+
+.content .main {
+  flex: 1;
+}
