@@ -79,7 +79,8 @@ public class RenderController {
         if (contentType != null) {
           response.setHeader("Content-Type", contentType);
         }
-        response.getOutputStream().write(Files.readAllBytes(filePath));
+
+        Files.copy(filePath, response.getOutputStream());
         response.flushBuffer();
         return null;
       }
