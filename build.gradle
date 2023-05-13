@@ -26,6 +26,9 @@ dependencies {
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
   implementation 'am.ik.marked4j:marked4j:0.11.0'
+
+  testImplementation 'org.assertj:assertj-core:3.24.2'
+
 }
 
 tasks.named('test') {
