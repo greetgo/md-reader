@@ -6,9 +6,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import kz.greetgo.md_reader.core.MimeTypeManager;
 import kz.greetgo.md_reader.core.Toc;
 import kz.greetgo.md_reader.core.env.Env;
+import kz.greetgo.md_reader.model.DirItem;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
@@ -71,7 +74,7 @@ public class RenderController {
 
     if (Files.exists(filePath)) {
       if (Files.isDirectory(filePath)) {
-        return listDirectory(filePath, model);
+        return listDirectory(filePath, model, uriNoBorderSlash);
       }
       if ("text/markdown".equals(contentType)) {
         return renderMarkdownFile(filePath, model, uriNoBorderSlash);
@@ -141,9 +144,23 @@ public class RenderController {
     return "noFile";
   }
 
-  private String listDirectory(Path dirPath, Model model) {
+  private String listDirectory(Path dirPath, Model model, String uriNoBorderSlash) {
     model.addAttribute("title", "List directory");
     model.addAttribute("dirPath", dirPath);
+
+    appendToc(model, uriNoBorderSlash);
+
+    String caption = Toc.toCaption(dirPath, ".md");
+    model.addAttribute("caption", caption);
+
+    List<DirItem> items = new ArrayList<>();
+
+    items.add(DirItem.of("Caption 001", "/reference1"));
+    items.add(DirItem.of("Caption 002", "/reference3"));
+    items.add(DirItem.of("Caption 003", "/reference4"));
+    items.add(DirItem.of("Caption 004", "/reference5"));
+
+    model.addAttribute("dirItems", items);
     return "listDirectory";
   }
 
