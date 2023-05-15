@@ -1,5 +1,6 @@
 package kz.greetgo.md_reader.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import kz.greetgo.md_reader.model.Md;
 import kz.greetgo.md_reader.model.TocItem;
 import lombok.SneakyThrows;
 
@@ -228,18 +230,34 @@ public class Toc {
 
   private static final Pattern START_DIGIT = Pattern.compile("(\\d+\\s+).*");
 
+  @SneakyThrows
   public static String toCaption(Path filePath, String targetExt) {
-    String name = filePath.toFile().getName();
-    name = name.replace('_', ' ');
-    name = name.trim();
-    Matcher matcher = START_DIGIT.matcher(name);
-    if (matcher.matches()) {
-      name = name.substring(matcher.group(1).length());
+
+    {
+      String name      = filePath.toFile().getName();
+      Path   parentDir = filePath.toFile().getParentFile().toPath();
+      Path   jsonFile  = parentDir.resolve(name + ".json");
+      if (Files.exists(jsonFile)) {
+        Md md = new ObjectMapper().readValue(jsonFile.toFile(), Md.class);
+        if (md.caption != null && md.caption.length() > 0) {
+          return md.caption;
+        }
+      }
     }
-    if (name.endsWith(targetExt)) {
-      name = name.substring(0, name.length() - targetExt.length());
+
+    {
+      String name = filePath.toFile().getName();
+      name = name.replace('_', ' ');
+      name = name.trim();
+      Matcher matcher = START_DIGIT.matcher(name);
+      if (matcher.matches()) {
+        name = name.substring(matcher.group(1).length());
+      }
+      if (name.endsWith(targetExt)) {
+        name = name.substring(0, name.length() - targetExt.length());
+      }
+      return name;
     }
-    return name;
   }
 
   private void fillRoot(Path startDir, Element root) throws IOException {

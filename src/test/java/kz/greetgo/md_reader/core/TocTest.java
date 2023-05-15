@@ -1,6 +1,7 @@
 package kz.greetgo.md_reader.core;
 
 import java.nio.file.Path;
+import kz.greetgo.md_reader.model.Md;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -399,5 +400,50 @@ class TocTest extends TocTestParent {
 
     assertThat(out).isFalse();
 
+  }
+
+  @Test
+  void toCaption_001() throws Exception {
+
+    String caption = "Caption 21 Stone";
+
+    Path file = file("some/cap21.md");
+    file("some/cap21.md.json", Md.withCaption(caption));
+
+    //
+    //
+    String actualCaption = Toc.toCaption(file, ".md");
+    //
+    //
+
+    assertThat(actualCaption).isEqualTo(caption);
+  }
+
+  @Test
+  void toCaption_002() throws Exception {
+
+    Path file = file("some/cap21.md");
+
+    //
+    //
+    String actualCaption = Toc.toCaption(file, ".md");
+    //
+    //
+
+    assertThat(actualCaption).isEqualTo("cap21");
+  }
+
+  @Test
+  void toCaption_003() throws Exception {
+
+    Path file = file("some/_001_Status_of_Door.md");
+
+    //
+    //
+    String actualCaption = Toc.toCaption(file, ".md");
+    //
+    //
+
+    assertThat(actualCaption).isEqualTo("Status of Door");
   }
 }

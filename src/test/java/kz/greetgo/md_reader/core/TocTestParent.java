@@ -1,6 +1,9 @@
 package kz.greetgo.md_reader.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.FileOutputStream;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 import kz.greetgo.md_reader.model.TocItem;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
@@ -44,10 +48,31 @@ class TocTestParent {
     toc.targetExt = ".md";
   }
 
-  protected void file(String pathAndName) throws Exception {
+  protected Path file(String pathAndName, Object content) throws Exception {
     Path filePath = toc.workDir.resolve(pathAndName);
     filePath.toFile().getParentFile().mkdirs();
-    Files.createFile(filePath);
+    if (content == null) {
+      Files.createFile(filePath);
+    } else {
+      String contentStr = contentToStr(content);
+      try (FileOutputStream fileOutputStream = new FileOutputStream(filePath.toFile())) {
+        fileOutputStream.write(contentStr.getBytes(StandardCharsets.UTF_8));
+      }
+    }
+    return filePath;
+  }
+
+  @SneakyThrows
+  private static String contentToStr(Object content) {
+    if (content instanceof CharSequence) {
+      return content.toString();
+    }
+    ObjectMapper objectMapper = new ObjectMapper();
+    return objectMapper.writeValueAsString(content);
+  }
+
+  protected Path file(String pathAndName) throws Exception {
+    return file(pathAndName, null);
   }
 
   protected void assertItem(String place, int index, String caption, int level, String ref, boolean selected) {
