@@ -201,7 +201,7 @@ public class Toc {
       TocItem item = new TocItem();
 
       item.path      = path;
-      item.caption   = toCaption(refPath.toFile().getName());
+      item.caption   = toCaption(refPath, targetExt);
       item.reference = reference;
       item.level     = level;
 
@@ -228,7 +228,8 @@ public class Toc {
 
   private static final Pattern START_DIGIT = Pattern.compile("(\\d+\\s+).*");
 
-  private String toCaption(String name) {
+  public static String toCaption(Path filePath, String targetExt) {
+    String name = filePath.toFile().getName();
     name = name.replace('_', ' ');
     name = name.trim();
     Matcher matcher = START_DIGIT.matcher(name);
@@ -256,6 +257,9 @@ public class Toc {
 
       @Override
       public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+        if (dir.toFile().getName().startsWith(".")) {
+          return FileVisitResult.SKIP_SUBTREE;
+        }
 
         Element current = new Element(dir, level());
 
@@ -277,7 +281,9 @@ public class Toc {
 
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-        last().children.put(file.toFile().getName(), new Element(file, level()));
+        if (file.toFile().getName().endsWith(targetExt)) {
+          last().children.put(file.toFile().getName(), new Element(file, level()));
+        }
         return FileVisitResult.CONTINUE;
       }
 
