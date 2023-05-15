@@ -13,7 +13,9 @@ class TocTest extends TocTestParent {
     file("some/toc1/root1.md");
     file("some/toc1/root1/cap11.md");
     file("some/toc1/root1/cap12.md");
-    file("some/toc1/root1/.hidden_file.txt");
+    file("some/toc1/root1/.hidden_file.md");
+//    file("some/toc1/root1/.hidden_dir/ok.md");
+//    file("some/toc1/root1/pic.jpg");
     file("some/toc1/root2.md");
     file("some/toc1/root2/cap21.md");
     file("some/toc1/root2/stone/cap22.md");
@@ -289,6 +291,39 @@ class TocTest extends TocTestParent {
     assertItem("LhMiG61Lpe", 5, "stake other", 2, "/some/toc1/good_root2/03_stone/03_stone_toc_x/03_stake_other.md", false);
     assertItem("JAsQQ1HDoS", 6, "state locks", 2, "/some/toc1/good_root2/03_stone/03_stone_toc_x/04_state_locks.md", false);
     assertItem("ULLmOZxObo", 7, "stone cap x", 1, "/some/toc1/good_root2/03_stone/04_stone_cap_x.md", false);
+  }
+
+  @Test
+  void populate__008() throws Exception {
+
+    file("some/toc1/root1.md");
+    file("some/toc1/root1/cap11.md");
+    file("some/toc1/root1/cap12.md");
+    file("some/toc1/root1/.hidden_file.md");
+    file("some/toc1/root1/.hidden_dir/ok.md");
+//    file("some/toc1/root1/pic.jpg");
+    file("some/toc1/root2.md");
+    file("some/toc1/root2/cap21.md");
+    file("some/toc1/root2/stone/cap22.md");
+
+    toc.uriNoSlash = "some/toc1/root1/cap12.md";
+
+    //
+    //
+    toc.populate();
+    //
+    //
+
+    assertItem("SDkYVl0L2v", 0, "some", 1, "/some", true);
+    assertItem("2LPdm1zz7y", 1, "toc1", 2, "/some/toc1", true);
+    assertItem("qE0ZiCAO3c", 2, "root1", 3, "/some/toc1/root1.md", true);
+    assertItem("8RP9jdqWMt", 3, "cap11", 4, "/some/toc1/root1/cap11.md", false);
+    assertItem("5b5h5txI51", 4, "cap12", 4, "/some/toc1/root1/cap12.md", true);
+    assertItem("7jRAUds5sd", 5, "root2", 3, "/some/toc1/root2.md", false);
+    assertItem("zHfm3z704g", 6, "cap21", 4, "/some/toc1/root2/cap21.md", false);
+    assertItem("2emKz80AII", 7, "stone", 4, "/some/toc1/root2/stone", false);
+    assertItem("S0pv3pKX42", 8, "cap22", 5, "/some/toc1/root2/stone/cap22.md", false);
+
   }
 
   @Test

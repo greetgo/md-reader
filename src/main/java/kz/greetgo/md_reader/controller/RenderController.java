@@ -6,11 +6,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import kz.greetgo.md_reader.core.MimeTypeManager;
+import kz.greetgo.md_reader.core.Toc;
 import kz.greetgo.md_reader.core.env.Env;
-import kz.greetgo.md_reader.model.TocItem;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
@@ -76,7 +74,7 @@ public class RenderController {
         return listDirectory(filePath, model);
       }
       if ("text/markdown".equals(contentType)) {
-        return renderMarkdownFile(filePath, model);
+        return renderMarkdownFile(filePath, model, uriNoBorderSlash);
       }
       {
         if (contentType != null) {
@@ -104,11 +102,11 @@ public class RenderController {
   }
 
   @SneakyThrows
-  private String renderMarkdownFile(Path filePath, Model model) {
+  private String renderMarkdownFile(Path filePath, Model model, String uriNoBorderSlash) {
     model.addAttribute("filePath", filePath);
     model.addAttribute("title", "Документация по MyBPM");
 
-    appendToc(filePath, model);
+    appendToc(model, uriNoBorderSlash);
 
     String fileText = Files.readString(filePath);
 
@@ -122,31 +120,16 @@ public class RenderController {
     }
   }
 
-  private void appendToc(Path filePath, Model model) {
-    List<TocItem> items = new ArrayList<>();
+  private void appendToc(Model model, String uriNoBorderSlash) {
+    Toc toc = new Toc();
+    toc.workDir     = Env.workDir();
+    toc.targetExt   = ".md";
+    toc.uriNoSlash  = uriNoBorderSlash;
+    toc.tocFileName = ".toc";
 
-    items.add(TocItem.of(1, "Заголовок 01", "/doc/api-service/050-auth.d/001-auth-with-password.md"));
-    items.add(TocItem.of(2, "Заголовок 01 01", "/asd54hjk3b25234bh5"));
-    items.add(TocItem.of(2, "Заголовок 01 02", "/"));
-    items.add(TocItem.of(2, "Заголовок 01 03", "/"));
-    items.add(TocItem.of(3, "Заголовок 01 03 01", "/"));
-    items.add(TocItem.of(3, "Заголовок 01 03 02", "/"));
-    items.add(TocItem.of(3, "Заголовок 01 03 03", "/"));
-    items.add(TocItem.of(2, "Заголовок 01 04", "/"));
-    items.add(TocItem.of(1, "Заголовок 02", "/"));
-    items.add(TocItem.of(1, "Заголовок 03", "/"));
-    items.add(TocItem.of(1, "Заголовок 04", "/"));
-    items.add(TocItem.of(2, "Заголовок 04 01", "/"));
-    items.add(TocItem.of(3, "Заголовок 04 01 01", "/"));
-    items.add(TocItem.of(4, "Заголовок 04 01 01 01", "/"));
-    items.add(TocItem.of(5, "Заголовок 04 01 01 01 01", "/"));
-    items.add(TocItem.of(6, "Заголовок 04 01 01 01 01 01", "/"));
-    items.add(TocItem.of(7, "Заголовок 04 01 01 01 01 01 01", "/"));
-    items.add(TocItem.of(8, "Заголовок 04 01 01 01 01 01 01 01", "/"));
+    toc.populate();
 
-    items.get(3).selected = true;
-
-    model.addAttribute("tocItems", items);
+    model.addAttribute("tocItems", toc.items);
   }
 
   private String noFile(ServletWebRequest request, Model model, String uriNoBorderSlash) {
@@ -159,6 +142,7 @@ public class RenderController {
   }
 
   private String listDirectory(Path dirPath, Model model) {
+    model.addAttribute("title", "List directory");
     model.addAttribute("dirPath", dirPath);
     return "listDirectory";
   }

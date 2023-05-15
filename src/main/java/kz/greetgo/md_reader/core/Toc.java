@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import kz.greetgo.md_reader.model.TocItem;
+import lombok.SneakyThrows;
 
 public class Toc {
 
@@ -27,7 +28,7 @@ public class Toc {
 
   public List<TocItem> items = new ArrayList<>();
 
-  public void populate() throws Exception {
+  public void populate() {
 
     if (!Files.exists(workDir)) {
       return;
@@ -83,13 +84,15 @@ public class Toc {
     return extractContentDir(innerFile);
   }
 
-  static boolean isOut(Path parent, Path inner) throws Exception {
+  @SneakyThrows
+  static boolean isOut(Path parent, Path inner) {
     String parentPath = parent.toFile().getCanonicalPath();
     String innerPath  = inner.toFile().getCanonicalPath();
     return !innerPath.startsWith(parentPath);
   }
 
-  private void populateOn(Path workDir, Path innerFile) throws Exception {
+  @SneakyThrows
+  private void populateOn(Path workDir, Path innerFile) {
 
     {
       Path pointToDir = extractDir(innerFile);
@@ -291,7 +294,8 @@ public class Toc {
     });
   }
 
-  private void populateInner(Path startDir, Path innerFile) throws Exception {
+  @SneakyThrows
+  private void populateInner(Path startDir, Path innerFile) {
 
     Element root = new Element(null, 0);
 
