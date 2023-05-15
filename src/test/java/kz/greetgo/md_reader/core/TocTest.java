@@ -1,7 +1,7 @@
 package kz.greetgo.md_reader.core;
 
 import java.nio.file.Path;
-import kz.greetgo.md_reader.model.Md;
+import kz.greetgo.md_reader.model.Settings;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -403,23 +403,6 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void toCaption_001() throws Exception {
-
-    String caption = "Caption 21 Stone";
-
-    Path file = file("some/cap21.md");
-    file("some/cap21.md.json", Md.withCaption(caption));
-
-    //
-    //
-    String actualCaption = Toc.toCaption(file, ".md");
-    //
-    //
-
-    assertThat(actualCaption).isEqualTo(caption);
-  }
-
-  @Test
   void toCaption_002() throws Exception {
 
     Path file = file("some/cap21.md");
@@ -445,5 +428,52 @@ class TocTest extends TocTestParent {
     //
 
     assertThat(actualCaption).isEqualTo("Status of Door");
+  }
+
+  @Test
+  void toCaption_004() throws Exception {
+
+    String cap = "Caption for test Pg1i1Ae2G9";
+
+    Path file = file("some/Hello/_001_Status_of_Door.md");
+    file("some/Hello/.settings.json", Settings.withCaption(cap));
+
+    //
+    //
+    String actualCaption = Toc.toCaption(file.toFile().getParentFile().toPath(), ".md");
+    //
+    //
+
+    assertThat(actualCaption).isEqualTo(cap);
+  }
+
+  @Test
+  void toCaption_005() throws Exception {
+
+    String cap = "Caption for test Pg1i1Ae2G9";
+
+    Path file = file("some/Hello/_001_Status_of_Door.md", "## " + cap + "\n\nkh0yR4nOfS\nxGqPLI1PRX");
+
+    //
+    //
+    String actualCaption = Toc.toCaption(file, ".md");
+    //
+    //
+
+    assertThat(actualCaption).isEqualTo(cap);
+  }
+
+  @Test
+  void toCaption_006() throws Exception {
+
+    Path file = file("some/Hello/_001_Status_Object.md");
+
+    //
+    //
+    String actualCaption = Toc.toCaption(file, ".md");
+    //
+    //
+
+    assertThat(actualCaption).isEqualTo("Status Object");
   }
 }

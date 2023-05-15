@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import kz.greetgo.md_reader.model.Md;
+import kz.greetgo.md_reader.model.Settings;
 import kz.greetgo.md_reader.model.TocItem;
 import lombok.SneakyThrows;
 
@@ -233,14 +233,27 @@ public class Toc {
   @SneakyThrows
   public static String toCaption(Path filePath, String targetExt) {
 
-    {
-      String name      = filePath.toFile().getName();
-      Path   parentDir = filePath.toFile().getParentFile().toPath();
-      Path   jsonFile  = parentDir.resolve(name + ".json");
-      if (Files.exists(jsonFile)) {
-        Md md = new ObjectMapper().readValue(jsonFile.toFile(), Md.class);
-        if (md.caption != null && md.caption.length() > 0) {
-          return md.caption;
+    if (Files.isDirectory(filePath)) {
+      Path settingsFile = filePath.resolve(".settings.json");
+      if (Files.isRegularFile(settingsFile)) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Settings     settings     = objectMapper.readValue(settingsFile.toFile(), Settings.class);
+        if (settings.hasCaption()) {
+          return settings.caption;
+        }
+      }
+    }
+
+    if (Files.isRegularFile(filePath)) {
+      String name = filePath.toFile().getName();
+      if (name.endsWith(targetExt)) {
+        List<String> lines = Files.readAllLines(filePath);
+        if (lines.size() > 0) {
+          String firstLine = lines.get(0).trim();
+          while (firstLine.startsWith("#")) {
+            firstLine = firstLine.substring(1);
+          }
+          return firstLine.trim();
         }
       }
     }
