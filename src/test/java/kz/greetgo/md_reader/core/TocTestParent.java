@@ -41,7 +41,7 @@ class TocTestParent {
     toc         = new Toc();
     toc.workDir = workDir;
 
-    toc.ext = ".md";
+    toc.targetExt = ".md";
   }
 
   protected void file(String pathAndName) throws Exception {
@@ -57,10 +57,10 @@ class TocTestParent {
 
     TocItem tocItem = toc.items.get(index);
 
-    assertThat(tocItem).describedAs(d).isNotNull();
-    assertThat(tocItem.level).describedAs(d).isEqualTo(level);
-    assertThat(tocItem.caption).describedAs(d).isEqualTo(caption);
-    assertThat(tocItem.reference).describedAs(d).isEqualTo(ref);
-    assertThat(tocItem.selected).describedAs(d).isEqualTo(selected);
+    assertThat(tocItem).describedAs(d + " : tocItem == null").isNotNull();
+    assertThat(tocItem.reference).describedAs(d + " : reference").isEqualTo(ref);
+    assertThat(tocItem.caption).describedAs(d + " : caption").isEqualTo(caption);
+    assertThat(tocItem.level).describedAs(d + " : level").isEqualTo(level);
+    assertThat(tocItem.selected).describedAs(d + " : selected").isEqualTo(selected);
   }
 }

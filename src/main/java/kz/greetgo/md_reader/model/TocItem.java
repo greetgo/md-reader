@@ -1,11 +1,15 @@
 package kz.greetgo.md_reader.model;
 
+import java.nio.file.Path;
+
 @SuppressWarnings("unused")
 public class TocItem {
   public String  caption;
   public String  reference;
   public int     level;
   public boolean selected;
+
+  public Path path;
 
   public static TocItem of(int level, String caption, String reference) {
     TocItem ret = new TocItem();
