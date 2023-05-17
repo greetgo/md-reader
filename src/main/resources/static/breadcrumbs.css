@@ -1,3 +1,17 @@
 .breadcrumbs {
   border: 1px solid blue;
+  display: flex;
+}
+
+.breadcrumbs-item {
+  cursor: pointer;
+  color: deepskyblue;
+}
+.breadcrumbs-item:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs-item-separator {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }

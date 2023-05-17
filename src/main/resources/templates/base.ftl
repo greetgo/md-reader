@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
       <#--noinspection FtlReferencesInspection-->
     <title>${title}</title>
+
     <link rel="stylesheet" href="/static/common.css">
     <link rel="stylesheet" href="/static/header.css">
     <link rel="stylesheet" href="/static/breadcrumbs.css">
@@ -25,27 +26,39 @@
   </head>
   <body>
   <#nested/>
+  <script src="/static/md-ref.js"></script>
   </body>
   </html>
 </#macro>
 
 <#macro header>
-  <div class="header">Header</div>
+  <div class="header">
+      <#--noinspection FtlReferencesInspection-->
+      ${headerCaption}
+  </div>
 </#macro>
 <#macro breadcrumbs>
-  <div class="breadcrumbs">Хлебные крошки</div>
+  <div class="breadcrumbs">
+      <#--noinspection FtlReferencesInspection-->
+      <#list breadcrumbsItems as item>
+        <div class="breadcrumbs-item">
+          <md-ref href="${item.reference}">${item.caption}</md-ref>
+        </div>
+          <#sep>
+            <div class="breadcrumbs-item-separator">/</div>
+      </#list>
+  </div>
 </#macro>
 
 <#macro toc>
-
 <#--noinspection FtlReferencesInspection-->
     <#list tocItems as item>
       <div class="caption level${item.level}${item.selected?then(' selected', '')}">
         <a href="${item.reference}">${item.caption}</a>
       </div>
     </#list>
-
 </#macro>
+
 <#macro footer>
   <div class="footer">Footer</div>
 </#macro>

@@ -21,11 +21,11 @@ public class Breadcrumbs {
   @SneakyThrows
   public void populate() {
 
-    if (uriNoSlash == null || uriNoSlash.startsWith("/")) {
-      throw new RuntimeException("k4Ri1zd9d6 :: Illegal uriNoSlash");
+    if (uriNoSlash.isEmpty()) {
+      uriNoSlash = null;
     }
 
-    Path filePath = workDir.resolve(uriNoSlash);
+    Path filePath = uriNoSlash == null ? workDir : workDir.resolve(uriNoSlash);
 
     if (Toc.isOut(workDir, filePath)) {
       items.add(BreadcrumbsItem.of(rootCaption, "/"));
@@ -40,13 +40,21 @@ public class Breadcrumbs {
       }
     }
 
-    if (Files.isRegularFile(filePath)) {
-      filePath = filePath.toFile().getParentFile().toPath();
+//    if (Files.isRegularFile(filePath)) {
+//      filePath = filePath.toFile().getParentFile().toPath();
+//    }
+
+    var added = filePath;
+    {
+      BreadcrumbsItem i = new BreadcrumbsItem();
+      i.caption   = Toc.toCaption(filePath, targetExt);
+      i.reference = extractRef(filePath);
+      items.add(i);
     }
 
     while (!Files.isSameFile(workDir, filePath)) {
 
-      if (Files.exists(filePath.resolve(tocFileName))) {
+      if (Files.exists(filePath.resolve(tocFileName)) && !Files.isSameFile(filePath, added)) {
         BreadcrumbsItem i = new BreadcrumbsItem();
         i.caption   = Toc.toCaption(filePath, targetExt);
         i.reference = extractRef(filePath);

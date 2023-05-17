@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import kz.greetgo.md_reader.core.Breadcrumbs;
 import kz.greetgo.md_reader.core.DirList;
 import kz.greetgo.md_reader.core.MimeTypeManager;
 import kz.greetgo.md_reader.core.Toc;
@@ -161,10 +162,24 @@ public class RenderController {
 
   private void appendCommonAttributes(Path filePath, Model model, String uriNoBorderSlash) {
     appendToc(model, uriNoBorderSlash);
+    appendBreadcrumbs(model, uriNoBorderSlash);
 
     String caption = Toc.toCaption(filePath, ".md");
     model.addAttribute("caption", caption);
-    model.addAttribute("title", "MyBPM - " + caption);
+    model.addAttribute("title", Env.headerCaption() + " - " + caption);
+    model.addAttribute("headerCaption", Env.headerCaption());
+  }
+
+  private void appendBreadcrumbs(Model model, String uriNoBorderSlash) {
+    Breadcrumbs b = new Breadcrumbs();
+    b.workDir     = Env.workDir();
+    b.uriNoSlash  = uriNoBorderSlash;
+    b.rootCaption = Env.breadcrumbsRoot();
+    b.targetExt   = ".md";
+
+    b.populate();
+
+    model.addAttribute("breadcrumbsItems", b.items);
   }
 
 }

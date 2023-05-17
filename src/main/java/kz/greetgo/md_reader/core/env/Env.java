@@ -16,7 +16,20 @@ public class Env {
     return EnvReader.str("MD_READER_GIT_REPO");
   }
 
-  public static  String uriTop() {
+  public static String uriTop() {
     return EnvReader.str("MD_READER_URI_TOP").orElse("index");
+  }
+
+  /**
+   * Наименование корня в хлебных крошках
+   *
+   * @return наименование
+   */
+  public static String breadcrumbsRoot() {
+    return EnvReader.str("MD_READER_BREADCRUMBS_ROOT").orElse("Документация");
+  }
+
+  public static String headerCaption() {
+    return EnvReader.str("MD_READER_HEADER_CAPTION").orElse("MyBPM");
   }
 }
