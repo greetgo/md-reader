@@ -5,10 +5,26 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 import lombok.SneakyThrows;
 
 public abstract class TestCommon {
 
+  protected static String rndTestDir;
+
+  static {
+    Random rnd = new Random();
+    int    i   = rnd.nextInt();
+    if (i < 0) {
+      i = -i;
+    }
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-'T'-HH-mm-ss-SSS");
+
+    rndTestDir = "build/tests/wd_" + sdf.format(new Date()) + "_" + i + "/";
+  }
 
   protected abstract Path workDir();
 

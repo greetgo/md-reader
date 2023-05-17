@@ -3,9 +3,6 @@ package kz.greetgo.md_reader.core;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
 import kz.greetgo.md_reader.model.TocItem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,16 +18,7 @@ abstract class TocTestParent extends TestCommon {
 
   @BeforeAll
   static void prepareParentWorkDir() {
-
-    Random rnd = new Random();
-    int    i   = rnd.nextInt();
-    if (i < 0) {
-      i = -i;
-    }
-
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-'T'-HH-mm-ss-SSS");
-
-    parentWorkDir = "build/tests/Toc/wd_" + sdf.format(new Date()) + "_" + i + "/";
+    parentWorkDir = rndTestDir + "Toc/";
   }
 
   @Override
