@@ -46,6 +46,10 @@ public class DirList {
 
       }
 
+      if (Files.isRegularFile(itemPath) && !itemPath.toFile().getName().endsWith(targetExt)) {
+        continue;
+      }
+
       DirItem item = new DirItem();
       item.caption = Toc.toCaption(itemPath, targetExt);
 

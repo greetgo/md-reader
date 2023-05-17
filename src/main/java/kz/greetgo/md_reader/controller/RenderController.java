@@ -6,12 +6,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import kz.greetgo.md_reader.core.DirList;
 import kz.greetgo.md_reader.core.MimeTypeManager;
 import kz.greetgo.md_reader.core.Toc;
 import kz.greetgo.md_reader.core.env.Env;
-import kz.greetgo.md_reader.model.DirItem;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
@@ -47,13 +45,17 @@ public class RenderController {
 
     String uriNoBorderSlash = cutBorderSlash(request.getRequest().getRequestURI());
 
+    Path workDir = Env.workDir();
+
+    Path filePath = workDir.resolve(uriNoBorderSlash);
+
     if (uriNoBorderSlash.startsWith("static/")) {
       String resourcePath = "/" + uriNoBorderSlash;
 
       try (InputStream inputStream = getClass().getResourceAsStream(resourcePath)) {
 
         if (inputStream == null) {
-          return noFile(request, model, cutBorderSlash(resourcePath));
+          return noFile(filePath, request, model, cutBorderSlash(resourcePath));
         }
 
         String contentType = MimeTypeManager.probeMimeType(resourcePath);
@@ -65,10 +67,6 @@ public class RenderController {
       }
 
     }
-
-    Path workDir = Env.workDir();
-
-    Path filePath = workDir.resolve(uriNoBorderSlash);
 
     String contentType = MimeTypeManager.probeMimeType(filePath.toFile().getName());
 
@@ -91,7 +89,7 @@ public class RenderController {
     }
 
     if (uriNoBorderSlash.toLowerCase().endsWith(".md")) {
-      return noFile(request, model, uriNoBorderSlash);
+      return noFile(filePath, request, model, uriNoBorderSlash);
     }
 
     for (String ext : new String[]{".md", ".MD"}) {
@@ -101,7 +99,7 @@ public class RenderController {
       }
     }
 
-    return noFile(request, model, uriNoBorderSlash);
+    return noFile(filePath, request, model, uriNoBorderSlash);
   }
 
   @SneakyThrows
@@ -119,7 +117,6 @@ public class RenderController {
 
       model.addAttribute("html", html);
       return "renderMarkdownFile";
-
     }
   }
 
@@ -135,7 +132,10 @@ public class RenderController {
     model.addAttribute("tocItems", toc.items);
   }
 
-  private String noFile(ServletWebRequest request, Model model, String uriNoBorderSlash) {
+  private String noFile(Path filePath, ServletWebRequest request, Model model, String uriNoBorderSlash) {
+
+    appendCommonAttributes(filePath, model, uriNoBorderSlash);
+
     String uri = request.getRequest().getRequestURI();
     model.addAttribute("uriNoBorderSlash", uriNoBorderSlash);
     model.addAttribute("requestUri", uri);
@@ -144,24 +144,31 @@ public class RenderController {
     return "noFile";
   }
 
-  private String listDirectory(Path dirPath, Model model, String uriNoBorderSlash) {
-    model.addAttribute("title", "List directory");
-    model.addAttribute("dirPath", dirPath);
+  private String listDirectory(Path filePath, Model model, String uriNoBorderSlash) {
 
+    appendCommonAttributes(filePath, model, uriNoBorderSlash);
+
+    DirList dirList = new DirList();
+    dirList.workDir   = Env.workDir();
+    dirList.dir       = filePath;
+    dirList.targetExt = ".md";
+
+    dirList.populate();
+
+    model.addAttribute("dirItems", dirList.items);
+
+    // TODO pompei этот параметр не нужен
+    model.addAttribute("dirPath", filePath);
+
+    return "listDirectory";
+  }
+
+  private void appendCommonAttributes(Path filePath, Model model, String uriNoBorderSlash) {
+    model.addAttribute("title", "List directory");
     appendToc(model, uriNoBorderSlash);
 
-    String caption = Toc.toCaption(dirPath, ".md");
+    String caption = Toc.toCaption(filePath, ".md");
     model.addAttribute("caption", caption);
-
-    List<DirItem> items = new ArrayList<>();
-
-    items.add(DirItem.of("Caption 001", "/reference1"));
-    items.add(DirItem.of("Caption 002", "/reference3"));
-    items.add(DirItem.of("Caption 003", "/reference4"));
-    items.add(DirItem.of("Caption 004", "/reference5"));
-
-    model.addAttribute("dirItems", items);
-    return "listDirectory";
   }
 
 }
