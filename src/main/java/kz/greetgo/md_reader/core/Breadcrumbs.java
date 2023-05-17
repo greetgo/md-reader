@@ -10,13 +10,15 @@ import kz.greetgo.md_reader.model.BreadcrumbsItem;
 import lombok.SneakyThrows;
 
 public class Breadcrumbs {
-  public Path   workDir;
-  public String uriNoSlash;
-  public String tocFileName = ".toc";
-  public String rootCaption = "Корень";
-  public String targetExt   = ".md";
+  public Path    workDir;
+  public String  uriNoSlash;
+  public String  tocFileName = ".toc";
+  public String  rootCaption = "Корень";
+  public String  targetExt   = ".md";
+  public boolean useLast;
 
   public List<BreadcrumbsItem> items = new ArrayList<>();
+
 
   @SneakyThrows
   public void populate() {
@@ -40,21 +42,24 @@ public class Breadcrumbs {
       }
     }
 
-//    if (Files.isRegularFile(filePath)) {
-//      filePath = filePath.toFile().getParentFile().toPath();
-//    }
+    Path added = null;
 
-    var added = filePath;
-    {
+    if (useLast) {
       BreadcrumbsItem i = new BreadcrumbsItem();
       i.caption   = Toc.toCaption(filePath, targetExt);
       i.reference = extractRef(filePath);
       items.add(i);
+
+      added = filePath;
+    } else {
+      if (Files.isRegularFile(filePath)) {
+        filePath = filePath.toFile().getParentFile().toPath();
+      }
     }
 
     while (!Files.isSameFile(workDir, filePath)) {
 
-      if (Files.exists(filePath.resolve(tocFileName)) && !Files.isSameFile(filePath, added)) {
+      if (Files.exists(filePath.resolve(tocFileName)) && (added == null || !Files.isSameFile(filePath, added))) {
         BreadcrumbsItem i = new BreadcrumbsItem();
         i.caption   = Toc.toCaption(filePath, targetExt);
         i.reference = extractRef(filePath);

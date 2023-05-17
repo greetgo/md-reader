@@ -38,14 +38,30 @@ public class RenderController {
     return uriNoBorderSlash;
   }
 
+  private static final String FAVICON = "/favicon.ico";
+
   @SneakyThrows
   @GetMapping("/**")
   public String request(ServletWebRequest request, Model model, HttpServletResponse response) {
-    if ("/".equals(request.getRequest().getRequestURI())) {
+    String requestURI = request.getRequest().getRequestURI();
+
+    if ("/".equals(requestURI)) {
       return "redirect:" + Env.uriTop();
     }
 
-    String uriNoBorderSlash = cutBorderSlash(request.getRequest().getRequestURI());
+    if (FAVICON.equals(requestURI)) {
+      try (InputStream inputStream = getClass().getResourceAsStream(FAVICON)) {
+        if (inputStream != null) {
+          String contentType = MimeTypeManager.probeMimeType(FAVICON);
+          response.setHeader("Content-Type", contentType);
+          response.getOutputStream().write(inputStream.readAllBytes());
+          response.flushBuffer();
+        }
+        return null;
+      }
+    }
+
+    String uriNoBorderSlash = cutBorderSlash(requestURI);
 
     Path workDir = Env.workDir();
 
@@ -61,7 +77,6 @@ public class RenderController {
         }
 
         String contentType = MimeTypeManager.probeMimeType(resourcePath);
-        log.info(() -> "G5U3zs0Hj8 :: resourcePath = " + resourcePath + ", contentType = " + contentType);
         response.setHeader("Content-Type", contentType);
         response.getOutputStream().write(inputStream.readAllBytes());
         response.flushBuffer();
@@ -176,6 +191,7 @@ public class RenderController {
     b.uriNoSlash  = uriNoBorderSlash;
     b.rootCaption = Env.breadcrumbsRoot();
     b.targetExt   = ".md";
+    b.useLast     = false;
 
     b.populate();
 
