@@ -124,7 +124,7 @@ class BreadcrumbsTest extends BreadcrumbsTestParent {
     //
 
     assertItem("G4KzJ0iWzH", 0, "Root Test1 DT7A1Epw93", "/");
-    assertItem("nSSI0ve9WB", 1, "work" /*            */, "/status/hi/work.md");
+    assertItem("nSSI0ve9WB", 1, "work" /*            */, "/status/hi/work");
     assertItem("Ntp2guZYdt", 2, "In toc title e7RLBaWY", "/status/hi/work/item3/in_toc.md");
 
     assertThat(b.items).hasSize(3);

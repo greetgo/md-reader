@@ -1,6 +1,7 @@
 package kz.greetgo.md_reader.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
@@ -240,6 +241,21 @@ public class Toc {
         Settings     settings     = objectMapper.readValue(settingsFile.toFile(), Settings.class);
         if (settings.hasCaption()) {
           return settings.caption;
+        }
+      } else {
+        File file   = filePath.toFile();
+        Path mdPath = file.getParentFile().toPath().resolve(file.getName() + targetExt);
+        if (Files.isRegularFile(mdPath)) {
+          List<String> allLines = Files.readAllLines(mdPath);
+          if (allLines.size() > 0) {
+            String firstLine = allLines.get(0);
+            if (firstLine.startsWith("#")) {
+              while (firstLine.startsWith("#")) {
+                firstLine = firstLine.substring(1);
+              }
+              return firstLine.trim();
+            }
+          }
         }
       }
     }
