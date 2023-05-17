@@ -3,6 +3,7 @@ package kz.greetgo.md_reader.controller;
 import am.ik.marked4j.Marked;
 import am.ik.marked4j.MarkedBuilder;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -104,8 +105,7 @@ public class RenderController {
 
   @SneakyThrows
   private String renderMarkdownFile(Path filePath, Model model, String uriNoBorderSlash) {
-    model.addAttribute("filePath", filePath);
-    model.addAttribute("title", "Документация по MyBPM");
+    appendCommonAttributes(filePath, model, uriNoBorderSlash);
 
     appendToc(model, uriNoBorderSlash);
 
@@ -137,10 +137,9 @@ public class RenderController {
     appendCommonAttributes(filePath, model, uriNoBorderSlash);
 
     String uri = request.getRequest().getRequestURI();
-    model.addAttribute("uriNoBorderSlash", uriNoBorderSlash);
+    model.addAttribute("resourceName", "/" + uriNoBorderSlash);
     model.addAttribute("requestUri", uri);
-    model.addAttribute("title", "Ой, не найден файл");
-    log.warning(() -> "lHs1st8YWy :: No file " + uriNoBorderSlash);
+    model.addAttribute("title", "Ой, ресурс не найден: " + new File(uriNoBorderSlash).getName());
     return "noFile";
   }
 
@@ -157,18 +156,15 @@ public class RenderController {
 
     model.addAttribute("dirItems", dirList.items);
 
-    // TODO pompei этот параметр не нужен
-    model.addAttribute("dirPath", filePath);
-
     return "listDirectory";
   }
 
   private void appendCommonAttributes(Path filePath, Model model, String uriNoBorderSlash) {
-    model.addAttribute("title", "List directory");
     appendToc(model, uriNoBorderSlash);
 
     String caption = Toc.toCaption(filePath, ".md");
     model.addAttribute("caption", caption);
+    model.addAttribute("title", "MyBPM - " + caption);
   }
 
 }

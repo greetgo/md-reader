@@ -8,9 +8,14 @@
       <#--noinspection FtlReferencesInspection-->
     <title>${title}</title>
     <link rel="stylesheet" href="/static/common.css">
+    <link rel="stylesheet" href="/static/header.css">
+    <link rel="stylesheet" href="/static/breadcrumbs.css">
     <link rel="stylesheet" href="/static/content.css">
     <link rel="stylesheet" href="/static/content-left.css">
     <link rel="stylesheet" href="/static/markdown.css">
+    <link rel="stylesheet" href="/static/dir-list.css">
+    <link rel="stylesheet" href="/static/no-file.css">
+    <link rel="stylesheet" href="/static/footer.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +30,10 @@
 </#macro>
 
 <#macro header>
-  <div>Header</div>
+  <div class="header">Header</div>
+</#macro>
+<#macro breadcrumbs>
+  <div class="breadcrumbs">Хлебные крошки</div>
 </#macro>
 
 <#macro toc>
@@ -39,5 +47,5 @@
 
 </#macro>
 <#macro footer>
-  <div>Footer</div>
+  <div class="footer">Footer</div>
 </#macro>

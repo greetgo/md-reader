@@ -1,6 +1,7 @@
 <#import "base.ftl" as base>
 <@base.layout>
     <@base.header/>
+    <@base.breadcrumbs/>
   <div class="content">
     <div class="left">
         <@base.toc/>
