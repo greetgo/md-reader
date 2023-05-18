@@ -7,7 +7,6 @@
         <@base.toc/>
     </div>
     <div class="main">
-
       <div class="dir-list">
         <div class="caption">${caption}</div>
         <div class="dir-list-items">

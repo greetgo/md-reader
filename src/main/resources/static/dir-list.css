@@ -1,3 +1,7 @@
 .dir-list {
-  border: 1px solid aquamarine;
+}
+
+.dir-list-items {
+  padding-top: 0.5rem;
+  line-height: 1.5rem;
 }

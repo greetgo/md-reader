@@ -1,11 +1,14 @@
 .breadcrumbs {
-  border: 1px solid blue;
   display: flex;
+  font-size: 90%;
+  padding-top: 0.1rem;
+  padding-left: 1rem;
+  padding-bottom: 0.3rem;
 }
 
 .breadcrumbs-item {
   cursor: pointer;
-  color: deepskyblue;
+  color: #006385;
 }
 .breadcrumbs-item:hover {
   text-decoration: underline;

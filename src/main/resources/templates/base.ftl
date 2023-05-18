@@ -60,5 +60,6 @@
 </#macro>
 
 <#macro footer>
-  <div class="footer">Footer</div>
+  <div class="footer">
+  </div>
 </#macro>

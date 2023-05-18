@@ -1,3 +1,28 @@
 .markdown {
-  border: 1px solid blueviolet;
+  max-width: 55rem;
+}
+.markdown pre {
+  background-color: #fcf7f7;
+  margin-left: 1rem;
+  padding: 0.3rem;
+}
+.markdown table {
+  border-spacing: 0;
+}
+
+.markdown table tr td, .markdown table tr th {
+  border-top: 1px solid #b7b7b7;
+  padding: 0.5rem;
+}
+.markdown table tr td:first-child,
+.markdown table tr th:first-child {
+  border-left: 1px solid #b7b7b7;
+  border-right: 1px solid #b7b7b7;
+}
+.markdown table tr td:last-child,
+.markdown table tr th:last-child {
+  border-right: 1px solid #b7b7b7;
+}
+.markdown table tr:last-child td{
+  border-bottom: 1px solid #b7b7b7;
 }
