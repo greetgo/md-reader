@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'kz.greetgo.md_reader'
-version = '0.0.1'
+version = rootProject.file('version/version.txt').text.trim()
 sourceCompatibility = '17'
 
 configurations {

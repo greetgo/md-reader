@@ -1,0 +1,27 @@
+version: "2.3"
+
+networks:
+  default:
+    name: md-reader
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
+
+services:
+
+  md-reader: #                                         http://localhost:11000
+    image: greetgo/md-reader:0.0.1
+    container_name: md-reader
+    restart: always
+    mem_limit: 700M
+    environment:
+      POSTGRES_PASSWORD: "iWAKOy4uS3v04T7bWM3SHNLiR8WyBP"
+      MD_READER_URI_TOP: "README"
+      MD_READER_WORK_DIR: "/data"
+      MD_READER_HEADER_CAPTION: "ФЫВ_ЙЦУ"
+    ports:
+      - "11000:8080"
+      - "11001:5005"
+    volumes:
+      - /home/pompei/IdeaProjects/mybpm-doc:/data
