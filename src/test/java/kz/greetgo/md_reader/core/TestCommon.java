@@ -39,6 +39,11 @@ public abstract class TestCommon {
     filePath.toFile().getParentFile().mkdirs();
     if (content == null) {
       Files.createFile(filePath);
+    } else if (content instanceof CharSequence) {
+      String contentStr = content.toString();
+      try (FileOutputStream fileOutputStream = new FileOutputStream(filePath.toFile())) {
+        fileOutputStream.write(contentStr.getBytes(StandardCharsets.UTF_8));
+      }
     } else {
       String contentStr = TestCommon.contentToStr(content);
       try (FileOutputStream fileOutputStream = new FileOutputStream(filePath.toFile())) {

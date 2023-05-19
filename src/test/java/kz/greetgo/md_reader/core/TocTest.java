@@ -1,7 +1,6 @@
 package kz.greetgo.md_reader.core;
 
 import java.nio.file.Path;
-import kz.greetgo.md_reader.model.Settings;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -436,7 +435,7 @@ class TocTest extends TocTestParent {
     String cap = "Caption for test Pg1i1Ae2G9";
 
     Path file = file("some/Hello/_001_Status_of_Door.md");
-    file("some/Hello/.settings.json", Settings.withCaption(cap));
+    file("some/Hello/.caption.txt", cap);
 
     //
     //

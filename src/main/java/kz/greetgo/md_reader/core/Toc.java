@@ -1,6 +1,5 @@
 package kz.greetgo.md_reader.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -17,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import kz.greetgo.md_reader.model.Settings;
 import kz.greetgo.md_reader.model.TocItem;
 import lombok.SneakyThrows;
 
@@ -235,13 +233,9 @@ public class Toc {
   public static String toCaption(Path filePath, String targetExt) {
 
     if (Files.isDirectory(filePath)) {
-      Path settingsFile = filePath.resolve(".settings.json");
-      if (Files.isRegularFile(settingsFile)) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Settings     settings     = objectMapper.readValue(settingsFile.toFile(), Settings.class);
-        if (settings.hasCaption()) {
-          return settings.caption;
-        }
+      Path captionTxtFile = filePath.resolve(".caption.txt");
+      if (Files.isRegularFile(captionTxtFile)) {
+        return Files.readString(captionTxtFile).trim();
       } else {
         File file   = filePath.toFile();
         Path mdPath = file.getParentFile().toPath().resolve(file.getName() + targetExt);
