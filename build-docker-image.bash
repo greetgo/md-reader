@@ -2,6 +2,8 @@
 
 set -e
 
+./gradlew build
+
 cd "$(dirname "$0")" || exit 113
 
 VERSION=$(cat version/version.txt)
