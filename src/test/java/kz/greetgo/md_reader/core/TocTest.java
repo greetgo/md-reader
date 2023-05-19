@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TocTest extends TocTestParent {
 
   @Test
-  void populate__001() throws Exception {
+  void populate__001() {
 
     file("some/toc1/root1.md");
     file("some/toc1/root1/cap11.md");
@@ -42,7 +42,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void populate__002() throws Exception {
+  void populate__002() {
 
     file("some/toc2/.toc");
     file("some/toc2/left_root1.md");
@@ -91,7 +91,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void populate__003() throws Exception {
+  void populate__003() {
 
     file("some/toc1/.toc");
     file("some/toc1/good_root1.md");
@@ -132,7 +132,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void populate__004() throws Exception {
+  void populate__004() {
 
     file("some/toc1/.toc");
     file("some/toc1/good_root1.md");
@@ -172,7 +172,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void populate__005() throws Exception {
+  void populate__005() {
 
     file("some/toc1/.toc");
     file("some/toc1/good_root1.md");
@@ -211,7 +211,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void populate__006() throws Exception {
+  void populate__006() {
 
     file("some/toc1/.toc");
     file("some/toc1/good_root1.md");
@@ -250,7 +250,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void populate__007() throws Exception {
+  void populate__007() {
 
     file("some/toc1/.toc");
     file("some/toc1/good_root1.md");
@@ -295,7 +295,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void populate__008() throws Exception {
+  void populate__008() {
 
     file("some/toc1/root1.md");
     file("some/toc1/root1/cap11.md");
@@ -328,7 +328,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void populate__009() throws Exception {
+  void populate__009() {
 
     file("some/toc1/root1.md");
     file("some/toc1/root1/cap11.md");
@@ -360,7 +360,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void isOut_001() throws Exception {
+  void isOut_001() {
 
     String f1 = "some/toc1/good_root2/04_cap23.md";
     String f2 = "some/toc1/good_root3/05_cap24.md";
@@ -382,7 +382,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void isOut_002() throws Exception {
+  void isOut_002() {
 
     String f1 = "some/toc1";
     String f2 = "some/toc1/good_root3/05_cap24.md";
@@ -403,7 +403,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void toCaption_002() throws Exception {
+  void toCaption_002() {
 
     Path file = file("some/cap21.md");
 
@@ -417,7 +417,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void toCaption_003() throws Exception {
+  void toCaption_003() {
 
     Path file = file("some/_001_Status_of_Door.md");
 
@@ -431,7 +431,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void toCaption_004() throws Exception {
+  void toCaption_004() {
 
     String cap = "Caption for test Pg1i1Ae2G9";
 
@@ -448,7 +448,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void toCaption_005() throws Exception {
+  void toCaption_005() {
 
     String cap = "Caption for test Pg1i1Ae2G9";
 
@@ -464,7 +464,7 @@ class TocTest extends TocTestParent {
   }
 
   @Test
-  void toCaption_006() throws Exception {
+  void toCaption_006() {
 
     Path file = file("some/Hello/_001_Status_Object.md");
 
