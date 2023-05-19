@@ -42,7 +42,7 @@
       <option name="m_ignoreExpressionsContainingConstants" value="true" />
     </inspection_tool>
     <inspection_tool class="ShellCheck" enabled="true" level="ERROR" enabled_by_default="true">
-      <shellcheck_settings value="SC2029,SC2129" />
+      <shellcheck_settings value="SC2029,SC2129,SC2164" />
     </inspection_tool>
     <inspection_tool class="SimplifiableConditionalExpression" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SpringJavaAutowiredFieldsWarningInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />

@@ -1,7 +1,8 @@
-FROM openjdk:17.0.2-jdk
+FROM alpine:3.14.6
 
-COPY build/libs/md-reader-0.0.1.jar app.jar
-COPY docker-build-files/run.sh run.sh
-COPY docker-build-files/mime.types /etc/mime.types
+RUN apk add --no-cache git openssh
 
-ENTRYPOINT ["sh", "/run.sh"]
+COPY md-reader /ssh/md-reader
+RUN  chmod u=r /ssh/md-reader
+
+COPY ssh_config /etc/ssh/ssh_config
