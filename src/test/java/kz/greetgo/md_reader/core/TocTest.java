@@ -359,6 +359,64 @@ class TocTest extends TocTestParent {
   }
 
   @Test
+  void populate__011() {
+
+    file("some/toc1/root1.md");
+    file("some/toc1/root1/cap11.md");
+    file("some/toc1/root1/cap12.md");
+    file("some/toc1/root2.md");
+    file("some/toc1/root2/.hide_this_dir");
+    file("some/toc1/root2/cap21.md");
+    file("some/toc1/root2/stone/cap22.md");
+
+    toc.uriNoSlash = "some/toc1/root1/cap12.md";
+
+    //
+    //
+    toc.populate();
+    //
+    //
+
+    assertItem("vOPbsQq5qr", 0, "some", 1, "/some", true);
+    assertItem("mph4Hc8cx8", 1, "toc1", 2, "/some/toc1", true);
+    assertItem("g6pQ72ll97", 2, "root1", 3, "/some/toc1/root1.md", true);
+    assertItem("nX6jHj8hiM", 3, "cap11", 4, "/some/toc1/root1/cap11.md", false);
+    assertItem("C9DCM4Vs58", 4, "cap12", 4, "/some/toc1/root1/cap12.md", true);
+
+    assertThat(toc.items).hasSize(5);
+  }
+
+  @Test
+  void populate__012() {
+
+    file("some/toc1/root1.md");
+    file("some/toc1/root1/.hide_this_dir");
+    file("some/toc1/root1/cap11.md");
+    file("some/toc1/root1/cap12.md");
+    file("some/toc1/root2.md");
+    file("some/toc1/root2/cap21.md");
+    file("some/toc1/root2/stone/cap22.md");
+
+    toc.uriNoSlash = "some/toc1/root1/cap12.md";
+
+    //
+    //
+    toc.populate();
+    //
+    //
+
+    assertItem("JVe1mgSM8j", 0, "some", 1, "/some", true);
+    assertItem("169MFd59E3", 1, "toc1", 2, "/some/toc1", true);
+    assertItem("zXT10X11w3", 2, "root2", 3, "/some/toc1/root2.md", false);
+    assertItem("50GGi6gF9O", 3, "cap21", 4, "/some/toc1/root2/cap21.md", false);
+    assertItem("Bh4b268cE3", 4, "stone", 4, "/some/toc1/root2/stone", false);
+    assertItem("2622gqNvYN", 5, "cap22", 5, "/some/toc1/root2/stone/cap22.md", false);
+
+    assertThat(toc.items).hasSize(6);
+
+  }
+
+  @Test
   void isOut_001() {
 
     String f1 = "some/toc1/good_root2/04_cap23.md";

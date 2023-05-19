@@ -11,6 +11,11 @@ public class TocItem {
 
   public Path path;
 
+  @Override
+  public String toString() {
+    return "TocItem{" + caption + " -> " + reference + '}';
+  }
+
   public static TocItem of(int level, String caption, String reference) {
     TocItem ret = new TocItem();
     ret.level     = level;

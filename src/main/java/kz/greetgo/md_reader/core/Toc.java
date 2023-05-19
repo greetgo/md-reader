@@ -302,6 +302,10 @@ public class Toc {
           return FileVisitResult.SKIP_SUBTREE;
         }
 
+        if (Files.exists(dir.resolve(".hide_this_dir"))) {
+          return FileVisitResult.SKIP_SUBTREE;
+        }
+
         Element current = new Element(dir, level());
 
         last().children.put(dir.toFile().getName(), current);
@@ -322,8 +326,13 @@ public class Toc {
 
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-        if (file.toFile().getName().endsWith(targetExt)) {
-          last().children.put(file.toFile().getName(), new Element(file, level()));
+        String name = file.toFile().getName();
+        if (name.endsWith(targetExt)) {
+          String nameNoExt = name.substring(0, name.length() - targetExt.length());
+          Path   hideFile  = file.toFile().getParentFile().toPath().resolve(nameNoExt).resolve(".hide_this_dir");
+          if (!Files.exists(hideFile)) {
+            last().children.put(name, new Element(file, level()));
+          }
         }
         return FileVisitResult.CONTINUE;
       }
