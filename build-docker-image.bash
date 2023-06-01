@@ -2,6 +2,8 @@
 
 set -e
 
+rm -rf build
+
 ./gradlew build
 
 cd "$(dirname "$0")" || exit 113
