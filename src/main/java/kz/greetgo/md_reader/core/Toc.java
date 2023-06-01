@@ -29,6 +29,8 @@ public class Toc {
 
   public List<TocItem> items = new ArrayList<>();
 
+  public static final String HIDE_THIS_DIR = ".hide_this_dir";
+
   public void populate() {
 
     if (!Files.exists(workDir)) {
@@ -328,11 +330,21 @@ public class Toc {
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
         String name = file.toFile().getName();
         if (name.endsWith(targetExt)) {
-          String nameNoExt = name.substring(0, name.length() - targetExt.length());
-          Path   hideFile  = file.toFile().getParentFile().toPath().resolve(nameNoExt).resolve(".hide_this_dir");
-          if (!Files.exists(hideFile)) {
-            last().children.put(name, new Element(file, level()));
+          {
+            String nameNoExt = name.substring(0, name.length() - targetExt.length());
+            Path   hideFile  = file.toFile().getParentFile().toPath().resolve(nameNoExt).resolve(HIDE_THIS_DIR);
+            if (Files.exists(hideFile)) {
+              return FileVisitResult.CONTINUE;
+            }
           }
+          {
+            Path hideFile = file.toFile().getParentFile().toPath().resolve(name + ".hidden");
+            if (Files.exists(hideFile)) {
+              return FileVisitResult.CONTINUE;
+            }
+          }
+
+          last().children.put(name, new Element(file, level()));
         }
         return FileVisitResult.CONTINUE;
       }

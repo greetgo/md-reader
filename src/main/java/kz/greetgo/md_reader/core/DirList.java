@@ -44,6 +44,10 @@ public class DirList {
           continue;
         }
 
+        if (Files.isRegularFile(itemPath.resolve(Toc.HIDE_THIS_DIR))) {
+          continue;
+        }
+
       }
 
       if (Files.isRegularFile(itemPath) && !itemPath.toFile().getName().endsWith(targetExt)) {

@@ -14,8 +14,38 @@ class TocTest extends TocTestParent {
     file("some/toc1/root1/cap11.md");
     file("some/toc1/root1/cap12.md");
     file("some/toc1/root1/.hidden_file.md");
-//    file("some/toc1/root1/.hidden_dir/ok.md");
-//    file("some/toc1/root1/pic.jpg");
+    file("some/toc1/root2.md");
+    file("some/toc1/root2/cap21.md");
+    file("some/toc1/root2/stone/cap22.md");
+
+    toc.uriNoSlash = "some/toc1/root1/cap12.md";
+
+    //
+    //
+    toc.populate();
+    //
+    //
+
+    assertItem("SDkYVl0L2v", 0, "some", 1, "/some", true);
+    assertItem("2LPdm1zz7y", 1, "toc1", 2, "/some/toc1", true);
+    assertItem("qE0ZiCAO3c", 2, "root1", 3, "/some/toc1/root1.md", true);
+    assertItem("8RP9jdqWMt", 3, "cap11", 4, "/some/toc1/root1/cap11.md", false);
+    assertItem("5b5h5txI51", 4, "cap12", 4, "/some/toc1/root1/cap12.md", true);
+    assertItem("7jRAUds5sd", 5, "root2", 3, "/some/toc1/root2.md", false);
+    assertItem("zHfm3z704g", 6, "cap21", 4, "/some/toc1/root2/cap21.md", false);
+    assertItem("2emKz80AII", 7, "stone", 4, "/some/toc1/root2/stone", false);
+    assertItem("S0pv3pKX42", 8, "cap22", 5, "/some/toc1/root2/stone/cap22.md", false);
+
+  }
+
+  @Test
+  void populate__013() {
+
+    file("some/toc1/root1.md");
+    file("some/toc1/root1/cap11.md");
+    file("some/toc1/root1/cap12.md");
+    file("some/toc1/root1/file_need_to_hide.md");
+    file("some/toc1/root1/file_need_to_hide.md.hidden");
     file("some/toc1/root2.md");
     file("some/toc1/root2/cap21.md");
     file("some/toc1/root2/stone/cap22.md");
