@@ -45,7 +45,7 @@ public class TextReplaceFilter extends GenericFilterBean {
 
   static String convertText(String text) {
 
-    StringBuilder sb = new StringBuilder();
+    StringBuilder sb = new StringBuilder(text.length() + 1000);
 
     Set<String> passedHrefs = new HashSet<>();
 
@@ -129,9 +129,7 @@ public class TextReplaceFilter extends GenericFilterBean {
         text = rest.substring(closer.end());
       }
 
-    }
-
-
+    }//while(true)
   }
 
   private boolean isText(String requestURI) {
