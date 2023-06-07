@@ -3,7 +3,6 @@ package kz.greetgo.md_reader.interceptors;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 public class ResponseConverter extends HttpServletResponseWrapper {
@@ -27,7 +26,7 @@ public class ResponseConverter extends HttpServletResponseWrapper {
   }
 
   @Override
-  public ServletOutputStream getOutputStream() throws IOException {
+  public ServletOutputStream getOutputStream() {
     return output;
   }
 }
