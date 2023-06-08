@@ -2,5 +2,20 @@
   padding-left: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid saddlebrown;
+
+  display: flex;
+  flex-direction: row;
+}
+
+.header-caption {
+  margin-right: 2rem;
+}
+
+.header .search-line {
+  margin-left: auto;
+  width: 30rem;
+}
+
+.gsc-control-cse-ru {
+  padding: 0;
 }

@@ -1,4 +1,9 @@
 .dir-list {
+  padding: 1rem;
+}
+
+.dir-list .caption {
+  border-bottom: #b4b4b4 solid 1px;
 }
 
 .dir-list-items {

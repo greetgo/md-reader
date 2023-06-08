@@ -4,6 +4,9 @@
   padding-top: 0.1rem;
   padding-left: 1rem;
   padding-bottom: 0.3rem;
+
+  /*border-bottom: 1px solid saddlebrown;*/
+  /*border-top: 1px solid saddlebrown;*/
 }
 
 .breadcrumbs-item {
@@ -12,6 +15,13 @@
 }
 .breadcrumbs-item:hover {
   text-decoration: underline;
+}
+
+.breadcrumbs-item:first-child {
+  margin-left: auto;
+}
+.breadcrumbs-item:last-child {
+  margin-right: 1rem;
 }
 
 .breadcrumbs-item-separator {

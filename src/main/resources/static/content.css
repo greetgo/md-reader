@@ -1,11 +1,19 @@
 
 .content {
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   column-gap: 0.5rem;
   padding-left: 1rem;
 }
 
 .content .main {
   flex: 1;
+}
+
+.markdown, .dir-list, .no-file {
+  max-width: 55rem;
+  background-color: white;
+  margin-left: 6rem;
+  border: #dfdfdf solid 1px;
+  box-shadow: 0px 0px 51px 8px rgba(34, 60, 80, 0.2);
 }

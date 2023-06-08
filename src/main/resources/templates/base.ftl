@@ -34,8 +34,15 @@
 
 <#macro header>
   <div class="header">
-      <#--noinspection FtlReferencesInspection-->
-      ${headerCaption}
+    <div class="header-caption">
+        <#--noinspection FtlReferencesInspection-->
+        ${headerCaption}
+    </div>
+    <div class="search-line">
+      <script async src="https://cse.google.com/cse.js?cx=b193cba5cd5844c1a">
+      </script>
+      <div class="gcse-search"></div>
+    </div>
   </div>
 </#macro>
 <#macro breadcrumbs>
