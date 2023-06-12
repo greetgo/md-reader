@@ -21,6 +21,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.request.ServletWebRequest;
 
+import static kz.greetgo.md_reader.core.sitemap.Sitemap.SITEMAPS;
+
 @Log
 @Controller
 public class RenderController {
@@ -42,7 +44,6 @@ public class RenderController {
 
   private static final String FAVICON    = "/favicon.ico";
   private static final String ROBOTS_TXT = "robots.txt";
-  private static final String SITEMAPS   = "/sitemaps/";
 
   @SneakyThrows
   @GetMapping("/**")
@@ -69,8 +70,8 @@ public class RenderController {
       }
     }
 
-    if (requestURI.toLowerCase().startsWith(SITEMAPS)) {
-      return sitemap(response, requestURI.substring(SITEMAPS.length()));
+    if (requestURI.toLowerCase().startsWith("/" + SITEMAPS + "/")) {
+      return sitemap(response, requestURI.substring(SITEMAPS.length() + 2));
     }
 
     String uriNoBorderSlash = cutBorderSlash(requestURI);

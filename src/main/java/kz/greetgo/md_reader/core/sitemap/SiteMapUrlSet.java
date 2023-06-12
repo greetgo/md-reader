@@ -12,6 +12,8 @@ public class SiteMapUrlSet implements AutoCloseable {
   private final FileOutputStream fileOut;
   private final XMLStreamWriter  xmlOut;
 
+  private int locCount = 0;
+
   @SuppressWarnings("SpellCheckingInspection")
   private static final String URL_SET = "urlset";
   private static final String URL     = "url";
@@ -37,6 +39,11 @@ public class SiteMapUrlSet implements AutoCloseable {
       xmlOut.writeEndElement();
     }
     xmlOut.writeEndElement();
+    locCount++;
+  }
+
+  public int getLocCount() {
+    return locCount;
   }
 
   @Override

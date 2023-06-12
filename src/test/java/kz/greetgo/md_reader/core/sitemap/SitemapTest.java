@@ -31,8 +31,8 @@ class SitemapTest extends SitemapTestParent {
     List<String> list = PathTagParser.parseSitemapIndex(rootXml);
 
     assertThat(list).hasSize(2);
-    assertThat(list.get(0)).isEqualTo("001.xml");
-    assertThat(list.get(1)).isEqualTo("002.xml");
+    assertThat(list.get(0)).isEqualTo("http://test.kz/sitemaps/001.xml");
+    assertThat(list.get(1)).isEqualTo("http://test.kz/sitemaps/002.xml");
 
     String f1 = sitemap.load("001.xml");
     String f2 = sitemap.load("002.xml");
@@ -57,5 +57,18 @@ class SitemapTest extends SitemapTestParent {
     retained.retainAll(refs2);
 
     assertThat(retained).isEmpty();
+  }
+
+  @Test
+  void trimSlash() {
+
+    //
+    //
+    String result = Sitemap.trimSlash("  ///http://hello.world/status/quo//////   ");
+    //
+    //
+
+    assertThat(result).isEqualTo("http://hello.world/status/quo");
+
   }
 }

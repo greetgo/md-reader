@@ -27,7 +27,7 @@ public abstract class PathSaxParser extends DefaultHandler {
 
   @Override
   public final void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-    tagStack.add(localName);
+    tagStack.add(qName);
     try {
       startTag(attributes);
     } catch (SAXException e) {
