@@ -232,6 +232,7 @@ public class RenderController {
     sitemap.uriTop         = Env.uriTop();
     sitemap.sizeLimitBytes = 45_000_000;
     sitemap.refLimit       = 50_000;
+    sitemap.host           = Env.host();
   }
 
   @SneakyThrows
