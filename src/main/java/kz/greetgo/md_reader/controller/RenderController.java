@@ -5,6 +5,7 @@ import am.ik.marked4j.MarkedBuilder;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import kz.greetgo.md_reader.core.Breadcrumbs;
@@ -12,6 +13,7 @@ import kz.greetgo.md_reader.core.DirList;
 import kz.greetgo.md_reader.core.MimeTypeManager;
 import kz.greetgo.md_reader.core.Toc;
 import kz.greetgo.md_reader.core.env.Env;
+import kz.greetgo.md_reader.core.sitemap.Sitemap;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
@@ -38,7 +40,9 @@ public class RenderController {
     return uriNoBorderSlash;
   }
 
-  private static final String FAVICON = "/favicon.ico";
+  private static final String FAVICON    = "/favicon.ico";
+  private static final String ROBOTS_TXT = "robots.txt";
+  private static final String SITEMAPS   = "/sitemaps/";
 
   @SneakyThrows
   @GetMapping("/**")
@@ -47,6 +51,10 @@ public class RenderController {
 
     if ("/".equals(requestURI)) {
       return "redirect:" + Env.uriTop();
+    }
+
+    if (("/" + ROBOTS_TXT).equals(requestURI)) {
+      return robots(response);
     }
 
     if (FAVICON.equals(requestURI)) {
@@ -59,6 +67,10 @@ public class RenderController {
         }
         return null;
       }
+    }
+
+    if (requestURI.toLowerCase().startsWith(SITEMAPS)) {
+      return sitemap(response, requestURI.substring(SITEMAPS.length()));
     }
 
     String uriNoBorderSlash = cutBorderSlash(requestURI);
@@ -118,6 +130,7 @@ public class RenderController {
 
     return noFile(filePath, request, model, uriNoBorderSlash);
   }
+
 
   @SneakyThrows
   private String renderMarkdownFile(Path filePath, Model model, String uriNoBorderSlash) {
@@ -196,6 +209,41 @@ public class RenderController {
     b.populate();
 
     model.addAttribute("breadcrumbsItems", b.items);
+  }
+
+  @SneakyThrows
+  private String robots(HttpServletResponse response) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Sitemap: ").append(Env.host()).append(SITEMAPS).append(Sitemap.ROOT).append("\n");
+
+    response.addHeader("Content-Type", "text/plain");
+
+    response.getOutputStream().write(sb.toString().getBytes(StandardCharsets.UTF_8));
+
+    response.flushBuffer();
+
+    return null;
+  }
+
+  private final Sitemap sitemap = new Sitemap();
+
+  {
+    sitemap.workDir        = Env.workDir();
+    sitemap.uriTop         = Env.uriTop();
+    sitemap.sizeLimitBytes = 45_000_000;
+    sitemap.refLimit       = 50_000;
+  }
+
+  @SneakyThrows
+  private String sitemap(HttpServletResponse response, String name) {
+
+    String responseXml = sitemap.load(name);
+
+    response.addHeader("Content-Type", "text/xml");
+
+    response.getOutputStream().write(responseXml.getBytes(StandardCharsets.UTF_8));
+
+    return null;
   }
 
 }

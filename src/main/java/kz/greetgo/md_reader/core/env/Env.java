@@ -12,12 +12,14 @@ public class Env {
     );
   }
 
-  public static Optional<String> gitRepo() {
-    return EnvReader.str("MD_READER_GIT_REPO");
+  private static final String HOST="MD_READER_HOST";
+
+  public static String host() {
+    return EnvReader.str(HOST).orElse("http://please-define-env-" + HOST);
   }
 
   public static String uriTop() {
-    return EnvReader.str("MD_READER_URI_TOP").orElse("index");
+    return EnvReader.str("MD_READER_URI_TOP").orElse("index.md");
   }
 
   /**
