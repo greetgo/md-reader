@@ -9,8 +9,9 @@ import javax.xml.stream.XMLStreamWriter;
 import lombok.SneakyThrows;
 
 public class SiteMapUrlSet implements AutoCloseable {
-  private final FileOutputStream fileOut;
-  private final XMLStreamWriter  xmlOut;
+  private final FileOutputStream        fileOut;
+  private final XMLStreamWriter         xmlOut;
+  private final ByteCounterOutputStream counterOut;
 
   private int locCount = 0;
 
@@ -21,8 +22,9 @@ public class SiteMapUrlSet implements AutoCloseable {
 
   @SneakyThrows
   public SiteMapUrlSet(Path file) {
-    fileOut = new FileOutputStream(file.toFile());
-    xmlOut  = XMLOutputFactory.newInstance().createXMLStreamWriter(new OutputStreamWriter(fileOut, StandardCharsets.UTF_8));
+    fileOut    = new FileOutputStream(file.toFile());
+    counterOut = new ByteCounterOutputStream(fileOut);
+    xmlOut     = XMLOutputFactory.newInstance().createXMLStreamWriter(new OutputStreamWriter(counterOut, StandardCharsets.UTF_8));
 
     xmlOut.writeStartDocument("UTF-8", "1.0");
 
@@ -39,11 +41,16 @@ public class SiteMapUrlSet implements AutoCloseable {
       xmlOut.writeEndElement();
     }
     xmlOut.writeEndElement();
+    xmlOut.flush();
     locCount++;
   }
 
   public int getLocCount() {
     return locCount;
+  }
+
+  public long bytesCount() {
+    return counterOut.count();
   }
 
   @Override

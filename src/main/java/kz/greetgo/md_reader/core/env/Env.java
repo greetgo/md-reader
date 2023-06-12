@@ -2,7 +2,7 @@ package kz.greetgo.md_reader.core.env;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
+import kz.greetgo.md_reader.core.sitemap.Sitemap;
 
 public class Env {
   public static Path workDir() {
@@ -12,10 +12,10 @@ public class Env {
     );
   }
 
-  private static final String HOST="MD_READER_HOST";
+  private static final String HOST = "MD_READER_HOST";
 
   public static String host() {
-    return EnvReader.str(HOST).orElse("http://please-define-env-" + HOST);
+    return Sitemap.trimSlash(EnvReader.str(HOST).orElse("http://please-define-env-" + HOST));
   }
 
   public static String uriTop() {

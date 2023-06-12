@@ -75,7 +75,7 @@ public class Sitemap {
     }
   }
 
-  static String trimSlash(String s) {
+  public static String trimSlash(String s) {
     if (s == null) {
       return "";
     }
@@ -184,7 +184,16 @@ public class Sitemap {
     }
 
     private boolean reachTheLimit() {
-      return siteMapUrlSet.getLocCount() >= refLimit;
+
+      if (siteMapUrlSet.getLocCount() >= refLimit) {
+        return true;
+      }
+
+      if (siteMapUrlSet.bytesCount() >= sizeLimitBytes) {
+        return true;
+      }
+
+      return false;
     }
 
     private void appendFile(Path file) {

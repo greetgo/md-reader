@@ -215,7 +215,7 @@ public class RenderController {
   @SneakyThrows
   private String robots(HttpServletResponse response) {
     StringBuilder sb = new StringBuilder();
-    sb.append("Sitemap: ").append(Env.host()).append(SITEMAPS).append(Sitemap.ROOT).append("\n");
+    sb.append("Sitemap: ").append(Env.host()).append('/').append(SITEMAPS).append('/').append(Sitemap.ROOT).append("\n");
 
     response.addHeader("Content-Type", "text/plain");
 
