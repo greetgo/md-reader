@@ -1,5 +1,4 @@
 <#macro layout>
-  <!doctype html>
   <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -36,7 +35,7 @@
   <div class="header">
     <div class="header-caption">
         <#--noinspection FtlReferencesInspection-->
-        ${headerCaption}
+      <a href="/">${headerCaption}</a>
     </div>
     <div class="search-line">
       <script async src="https://cse.google.com/cse.js?cx=b193cba5cd5844c1a">

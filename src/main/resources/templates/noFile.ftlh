@@ -1,7 +1,8 @@
 <#import "base.ftl" as base>
+<!DOCTYPE html>
 <@base.layout>
-    <@base.header/>
-    <@base.breadcrumbs/>
+<@base.header/>
+<@base.breadcrumbs/>
   <div class="content">
     <div class="left">
         <@base.toc/>
@@ -12,5 +13,5 @@
       </div>
     </div>
   </div>
-    <@base.footer/>
+<@base.footer/>
 </@base.layout>
