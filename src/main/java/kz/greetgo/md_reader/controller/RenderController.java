@@ -195,7 +195,7 @@ public class RenderController {
 
     String caption = Toc.toCaption(filePath, ".md");
     model.addAttribute("caption", caption);
-    model.addAttribute("title", Env.headerCaption() + " - " + caption);
+    model.addAttribute("title", caption + " - " + Env.headerCaption());
     model.addAttribute("headerCaption", Env.headerCaption());
   }
 
