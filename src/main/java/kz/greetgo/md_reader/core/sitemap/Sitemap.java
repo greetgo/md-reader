@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -196,6 +198,7 @@ public class Sitemap {
       return false;
     }
 
+    @SneakyThrows
     private void appendFile(Path file) {
       if (reachTheLimit()) {
         createNewFile();
@@ -206,7 +209,10 @@ public class Sitemap {
         reference = reference.substring(1);
       }
 
-      siteMapUrlSet.appendLoc(trimSlash(host) + '/' + trimSlash(reference));
+      FileTime fileTime = Files.getLastModifiedTime(file);
+      Date     lastMod  = Date.from(fileTime.toInstant());
+
+      siteMapUrlSet.appendLoc(trimSlash(host) + '/' + trimSlash(reference), lastMod);
     }
   }
 }

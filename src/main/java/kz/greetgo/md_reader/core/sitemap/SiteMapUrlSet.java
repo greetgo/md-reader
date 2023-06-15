@@ -4,6 +4,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import lombok.SneakyThrows;
@@ -16,9 +18,11 @@ public class SiteMapUrlSet implements AutoCloseable {
   private int locCount = 0;
 
   @SuppressWarnings("SpellCheckingInspection")
-  private static final String URL_SET = "urlset";
-  private static final String URL     = "url";
-  private static final String LOC     = "loc";
+  private static final String URL_SET  = "urlset";
+  private static final String URL      = "url";
+  private static final String LOC      = "loc";
+  @SuppressWarnings("SpellCheckingInspection")
+  private static final String LAST_MOD = "lastmod";
 
   @SneakyThrows
   public SiteMapUrlSet(Path file) {
@@ -33,11 +37,17 @@ public class SiteMapUrlSet implements AutoCloseable {
   }
 
   @SneakyThrows
-  public void appendLoc(String loc) {
+  public void appendLoc(String loc, Date lastMod) {
     xmlOut.writeStartElement(URL);
     {
       xmlOut.writeStartElement(LOC);
       xmlOut.writeCharacters(loc);
+      xmlOut.writeEndElement();
+    }
+    if (lastMod != null) {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+      xmlOut.writeStartElement(LAST_MOD);
+      xmlOut.writeCharacters(sdf.format(lastMod));
       xmlOut.writeEndElement();
     }
     xmlOut.writeEndElement();
