@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="/static/header.css">
     <link rel="stylesheet" href="/static/breadcrumbs.css">
     <link rel="stylesheet" href="/static/content.css">
-    <link rel="stylesheet" href="/static/content-left.css">
     <link rel="stylesheet" href="/static/markdown.css">
     <link rel="stylesheet" href="/static/dir-list.css">
     <link rel="stylesheet" href="/static/no-file.css">

@@ -13,13 +13,15 @@
   cursor: pointer;
   color: #006385;
 }
+
 .breadcrumbs-item:hover {
   text-decoration: underline;
 }
 
 .breadcrumbs-item:first-child {
-  margin-left: auto;
+  margin-left: 6.2rem;
 }
+
 .breadcrumbs-item:last-child {
   margin-right: 1rem;
 }
