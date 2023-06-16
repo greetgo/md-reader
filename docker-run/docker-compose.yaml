@@ -21,12 +21,12 @@ services:
     command: ["sh", "/updater/run.sh"]
 
   md-reader: #                                         http://localhost:11000
-    image: greetgo/md-reader:0.0.1
+    image: greetgo/md-reader:0.0.9
     container_name: md-reader
     restart: always
     mem_limit: 700M
     environment:
-      MD_READER_URI_TOP: "README"
+      MD_READER_URI_TOP: "index.md"
       MD_READER_WORK_DIR: "/data/mybpm-doc"
       MD_READER_HEADER_CAPTION: "MyBPM"
     ports:

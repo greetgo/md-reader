@@ -42,8 +42,9 @@ public class RenderController {
     return uriNoBorderSlash;
   }
 
-  private static final String FAVICON    = "/favicon.ico";
-  private static final String ROBOTS_TXT = "robots.txt";
+  private static final String FAVICON      = "/favicon.ico";
+  private static final String ROBOTS_TXT   = "robots.txt";
+  private static final String DOWNLOAD_TOC = "__download_toc";
 
   @SneakyThrows
   @GetMapping("/**")
@@ -70,8 +71,17 @@ public class RenderController {
       }
     }
 
-    if (requestURI.toLowerCase().startsWith("/" + SITEMAPS + "/")) {
+    String lowRequestUri = requestURI.toLowerCase();
+
+    if (lowRequestUri.startsWith("/" + SITEMAPS + "/")) {
       return sitemap(response, requestURI.substring(SITEMAPS.length() + 2));
+    }
+
+    {
+      String prefix = "/" + DOWNLOAD_TOC + ":";
+      if (lowRequestUri.startsWith(prefix)) {
+        return downloadToc(lowRequestUri.substring(0, prefix.length()), response);
+      }
     }
 
     String uriNoBorderSlash = cutBorderSlash(requestURI);
@@ -131,7 +141,6 @@ public class RenderController {
 
     return noFile(filePath, request, model, uriNoBorderSlash);
   }
-
 
   @SneakyThrows
   private String renderMarkdownFile(Path filePath, Model model, String uriNoBorderSlash) {
@@ -244,6 +253,13 @@ public class RenderController {
     response.addHeader("Content-Type", "text/xml");
 
     response.getOutputStream().write(responseXml.getBytes(StandardCharsets.UTF_8));
+
+    return null;
+  }
+
+  private String downloadToc(String uri, HttpServletResponse response) {
+
+
 
     return null;
   }

@@ -1,3 +1,5 @@
+import jars.ProjectExtJarSeparator
+
 plugins {
   id 'java'
   id 'org.springframework.boot' version '3.0.6'
@@ -16,6 +18,9 @@ configurations {
 
 repositories {
   mavenCentral()
+  maven {
+    url "https://repository.groupdocs.com/repo/"
+  }
 }
 
 dependencies {
@@ -35,8 +40,36 @@ dependencies {
 
 //  compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 
+  implementation 'com.groupdocs:groupdocs-conversion:22.8.1'
+
 }
 
 tasks.named('test') {
   useJUnitPlatform()
+}
+
+task dist(type: ProjectExtJarSeparator) {
+  group 'build'
+  dependsOn jar
+
+  doFirst {
+    for (File file : sourceSets.main.runtimeClasspath.getFiles()) {
+      if (file.exists() && file.getName().toLowerCase().endsWith(".jar")) {
+        addFileJar file
+      }
+    }
+  }
+
+  addFileJar jar.archiveFile.get().asFile
+
+  rootDir rootDir
+
+  mainClass "kz.greetgo.md_reader.MdReaderApplication"
+
+  jarBaseName "md-reader"
+
+  version project.version
+
+  distDir buildDir.toPath().resolve("dist").toFile()
+
 }
