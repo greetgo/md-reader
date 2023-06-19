@@ -21,7 +21,7 @@ services:
     command: ["sh", "/updater/run.sh"]
 
   md-reader: #                                         http://localhost:11000
-    image: greetgo/md-reader:0.0.9
+    image: greetgo/md-reader:0.0.10
     container_name: md-reader
     restart: always
     mem_limit: 700M

@@ -48,7 +48,7 @@ tasks.named('test') {
   useJUnitPlatform()
 }
 
-task dist(type: ProjectExtJarSeparator) {
+tasks.register('dist', ProjectExtJarSeparator) {
   group 'build'
   dependsOn jar
 
@@ -73,3 +73,10 @@ task dist(type: ProjectExtJarSeparator) {
   distDir buildDir.toPath().resolve("dist").toFile()
 
 }
+
+tasks.register('deleteInnerBuilds', Delete) {
+  delete projectDir.toPath().resolve('docker-build').resolve('image-02-extern').resolve('build')
+  delete projectDir.toPath().resolve('docker-build').resolve('image-03-app').resolve('build')
+}
+
+clean.dependsOn 'deleteInnerBuilds'
