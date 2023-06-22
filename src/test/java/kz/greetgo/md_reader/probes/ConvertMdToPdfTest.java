@@ -2,12 +2,8 @@ package kz.greetgo.md_reader.probes;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,17 +11,13 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import kz.greetgo.md_reader.controller.RenderController;
 import kz.greetgo.md_reader.test_utils.ParentTestClass;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-
-import static kz.greetgo.md_reader.controller.RenderController.makeOptions;
 
 class ConvertMdToPdfTest extends ParentTestClass {
 
@@ -205,9 +197,6 @@ class ConvertMdToPdfTest extends ParentTestClass {
   @Test
   @SneakyThrows
   void pandoc3() {
-
-
-
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     Path dir = Paths.get("build/ConvertMdToPdfTest/md-files-3/" + sdf.format(new Date()));
@@ -216,17 +205,24 @@ class ConvertMdToPdfTest extends ParentTestClass {
     copyRes("/tmp/pic-001.png", dir.resolve("pic-001.png"));
     copyRes("/tmp/main.css", dir.resolve("main.css"));
 
-    String fd = "/usr/share/fonts/truetype/liberation/";
+    var dirF = dir.resolve("fonts");
 
-    String f1_regular     = "LiberationSansNarrow-Regular.ttf";
-    String f1_bold        = "LiberationSansNarrow-Bold.ttf";
-    String f1_bold_italic = "LiberationSansNarrow-BoldItalic.ttf";
-    String f1_italic      = "LiberationSansNarrow-Italic.ttf";
-
-    String f2_regular     = "LiberationMono-Regular.ttf";
-    String f2_bold        = "LiberationMono-Bold.ttf";
-    String f2_bold_italic = "LiberationMono-BoldItalic.ttf";
-    String f2_italic      = "LiberationMono-Italic.ttf";
+    copyRes("/tmp/fonts/LiberationMono-Bold.ttf", dirF.resolve("LiberationMono-Bold.ttf"));
+    copyRes("/tmp/fonts/LiberationMono-BoldItalic.ttf", dirF.resolve("LiberationMono-BoldItalic.ttf"));
+    copyRes("/tmp/fonts/LiberationMono-Italic.ttf", dirF.resolve("LiberationMono-Italic.ttf"));
+    copyRes("/tmp/fonts/LiberationMono-Regular.ttf", dirF.resolve("LiberationMono-Regular.ttf"));
+    copyRes("/tmp/fonts/LiberationSans-Bold.ttf", dirF.resolve("LiberationSans-Bold.ttf"));
+    copyRes("/tmp/fonts/LiberationSans-BoldItalic.ttf", dirF.resolve("LiberationSans-BoldItalic.ttf"));
+    copyRes("/tmp/fonts/LiberationSans-Italic.ttf", dirF.resolve("LiberationSans-Italic.ttf"));
+    copyRes("/tmp/fonts/LiberationSans-Regular.ttf", dirF.resolve("LiberationSans-Regular.ttf"));
+    copyRes("/tmp/fonts/LiberationSansNarrow-Bold.ttf", dirF.resolve("LiberationSansNarrow-Bold.ttf"));
+    copyRes("/tmp/fonts/LiberationSansNarrow-BoldItalic.ttf", dirF.resolve("LiberationSansNarrow-BoldItalic.ttf"));
+    copyRes("/tmp/fonts/LiberationSansNarrow-Italic.ttf", dirF.resolve("LiberationSansNarrow-Italic.ttf"));
+    copyRes("/tmp/fonts/LiberationSansNarrow-Regular.ttf", dirF.resolve("LiberationSansNarrow-Regular.ttf"));
+    copyRes("/tmp/fonts/LiberationSerif-Bold.ttf", dirF.resolve("LiberationSerif-Bold.ttf"));
+    copyRes("/tmp/fonts/LiberationSerif-BoldItalic.ttf", dirF.resolve("LiberationSerif-BoldItalic.ttf"));
+    copyRes("/tmp/fonts/LiberationSerif-Italic.ttf", dirF.resolve("LiberationSerif-Italic.ttf"));
+    copyRes("/tmp/fonts/LiberationSerif-Regular.ttf", dirF.resolve("LiberationSerif-Regular.ttf"));
 
     Path outputErrTxt = dir.resolve("output_err.txt");
     Path outputPdf    = dir.resolve("__output__.pdf");
@@ -235,42 +231,46 @@ class ConvertMdToPdfTest extends ParentTestClass {
 
     List<String> cmd = new ArrayList<>();
     cmd.add("pandoc");
-//    cmd.add("-V");
-//    cmd.add("mainfont:" + f1_regular);
-//    cmd.add("-V");
-//    cmd.add("mainfontoptions:" + makeOptions(fd, f1_bold, f1_italic, f1_bold_italic));
-//    cmd.add("-V");
-//    cmd.add("monofont:" + f2_regular);
-//    cmd.add("-V");
-//    cmd.add("monofontoptions:" + makeOptions(fd, f2_bold, f2_italic, f2_bold_italic));
-//    cmd.add("-V");
-//    cmd.add("sansfont:" + f1_regular);
-//    cmd.add("-V");
-//    cmd.add("sansfontoptions:" + makeOptions(fd, f1_bold, f1_italic, f1_bold_italic));
-//    cmd.add("-V");
-//    cmd.add("mathfont:" + f1_regular);
-//    cmd.add("-V");
-//    cmd.add("mathfontoptions:" + makeOptions(fd, f1_bold, f1_italic, f1_bold_italic));
-//    cmd.add("--pdf-engine=xelatex");
-//    cmd.add("--pdf-engine=lualatex");
-
-
     cmd.add("--metadata");
-    cmd.add("pagetitle=\"ASD\"");
+    cmd.add("pagetitle=\"Document title\"");
     cmd.add("--pdf-engine=wkhtmltopdf");
     cmd.add("--css=main.css");
 
-    cmd.add("-o __output__.pdf");
-//    cmd.add("-s");
-//    cmd.add("-o __output__.html");
+    List<String> outL = new ArrayList<>();
 
-    cmd.add("001-hello.md");
-    cmd.add("002-Boom.md");
+//    outL.add("-o __output__.pdf");
+    outL.add("-s");
+    outL.add("-o __output__.html");
 
-    System.out.println("CaMpRrB9MO :: CMD " + cmd.stream().map(s -> "'" + s + "'").collect(Collectors.joining(" ")));
+    List<String> inL = new ArrayList<>();
 
+    inL.add("001-hello.md");
+    inL.add("002-Boom.md");
+
+
+    execCmd(dir, outputErrTxt, cmd, outL, inL);
+
+    outL.clear();
+    outL.add("-o __output__.pdf");
+
+    execCmd(dir, outputErrTxt, cmd, outL, inL);
+
+
+  }
+
+  private static void execCmd(Path dir,
+                              Path outputErrTxt,
+                              List<String> cmd,
+                              List<String> outL,
+                              List<String> inL) throws IOException, InterruptedException {
+    List<String> res = new ArrayList<>();
+    res.addAll(cmd);
+    res.addAll(outL);
+    res.addAll(inL);
+
+    System.out.println("8Mc1o2sDr0 :: CMD " + res.stream().map(s -> "'" + s + "'").collect(Collectors.joining(" ")));
     Process pandoc = new ProcessBuilder().directory(dir.toFile())
-                                         .command(cmd)
+                                         .command(res)
                                          .redirectOutput(ProcessBuilder.Redirect.DISCARD)
                                          .redirectError(ProcessBuilder.Redirect.to(outputErrTxt.toFile()))
                                          .start();
@@ -279,9 +279,8 @@ class ConvertMdToPdfTest extends ParentTestClass {
 
     if (exitCode != 0) {
       String errorText = Files.readString(outputErrTxt, StandardCharsets.UTF_8);
-      throw new RuntimeException("ZRM1xfDG8x :: Run exitCode = " + exitCode + "\n\n" + errorText);
+      throw new RuntimeException("KWf67739gd :: Run exitCode = " + exitCode + "\n\n" + errorText);
     }
-
   }
 
 }
