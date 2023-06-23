@@ -34,6 +34,7 @@ import static kz.greetgo.md_reader.core.sitemap.Sitemap.SITEMAPS;
 public class RenderController {
 
   private static final String FAVICON      = "/favicon.ico";
+  private static final String LOGO         = "/logo.png";
   private static final String ROBOTS_TXT   = "robots.txt";
   private static final String DOWNLOAD_TOC = "__download_toc";
 
@@ -54,9 +55,23 @@ public class RenderController {
     }
 
     if (FAVICON.equals(requestURI)) {
+      //noinspection DuplicatedCode
       try (InputStream inputStream = getClass().getResourceAsStream(FAVICON)) {
         if (inputStream != null) {
           String contentType = MimeTypeManager.probeMimeType(FAVICON);
+          response.setHeader("Content-Type", contentType);
+          response.getOutputStream().write(inputStream.readAllBytes());
+          response.flushBuffer();
+        }
+        return null;
+      }
+    }
+
+    if (LOGO.equals(requestURI)) {
+      //noinspection DuplicatedCode
+      try (InputStream inputStream = getClass().getResourceAsStream(LOGO)) {
+        if (inputStream != null) {
+          String contentType = MimeTypeManager.probeMimeType(LOGO);
           response.setHeader("Content-Type", contentType);
           response.getOutputStream().write(inputStream.readAllBytes());
           response.flushBuffer();
@@ -138,7 +153,7 @@ public class RenderController {
     return noFile(filePath, request, model, uriNoBorderSlash);
   }
 
-@SneakyThrows
+  @SneakyThrows
   private String renderMarkdownFile(Path filePath, Model model, String uriNoBorderSlash) {
     appendCommonAttributes(filePath, model, uriNoBorderSlash);
 

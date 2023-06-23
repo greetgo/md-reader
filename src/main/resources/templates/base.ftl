@@ -35,8 +35,7 @@
 <#macro header>
   <div class="header">
     <div class="header-caption">
-        <#--noinspection FtlReferencesInspection-->
-      <a href="/">${headerCaption}</a>
+      <img class="header-logo-img" src="/logo.png" alt="mybpm!"/>
     </div>
     <div class="search-line">
         <@yandex.searchLine />

@@ -18,6 +18,11 @@
   margin-right: 2rem;
 }
 
+.header-logo-img {
+  width: 75px;
+  height: 70px;
+}
+
 .header-caption a {
   font-size: 120%;
   color: black;
