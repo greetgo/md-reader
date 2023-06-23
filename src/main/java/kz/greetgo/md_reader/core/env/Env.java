@@ -34,4 +34,15 @@ public class Env {
   public static String headerCaption() {
     return EnvReader.str("MD_READER_HEADER_CAPTION").orElse("MyBPM");
   }
+
+  public static Path tmpDir() {
+    return Paths.get(
+      EnvReader.str("MD_READER_TMP_DIR")
+               .orElseGet(() -> System.getProperty("java.io.tmpdir"))
+    );
+  }
+
+  public static boolean clearTmpDir() {
+    return !EnvReader.bool("MD_READER_TMP_DIR_LEAVE");
+  }
 }

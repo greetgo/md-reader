@@ -9,20 +9,17 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.stream.Collectors;
 import kz.greetgo.md_reader.core.Breadcrumbs;
 import kz.greetgo.md_reader.core.DirList;
+import kz.greetgo.md_reader.core.MdConverter;
 import kz.greetgo.md_reader.core.MimeTypeManager;
 import kz.greetgo.md_reader.core.Toc;
 import kz.greetgo.md_reader.core.env.Env;
 import kz.greetgo.md_reader.core.sitemap.Sitemap;
-import kz.greetgo.md_reader.util.UriEscape;
+import kz.greetgo.md_reader.util.DownUtil;
+import kz.greetgo.md_reader.util.StrUtil;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
@@ -36,21 +33,6 @@ import static kz.greetgo.md_reader.core.sitemap.Sitemap.SITEMAPS;
 @Controller
 public class RenderController {
 
-  private static String cutBorderSlash(String requestUri) {
-    if (requestUri == null) {
-      requestUri = "/";
-    }
-
-    String uriNoBorderSlash = requestUri;
-    while (uriNoBorderSlash.startsWith("/")) {
-      uriNoBorderSlash = uriNoBorderSlash.substring(1);
-    }
-    while (uriNoBorderSlash.endsWith("/")) {
-      uriNoBorderSlash = uriNoBorderSlash.substring(uriNoBorderSlash.length() - 1);
-    }
-    return uriNoBorderSlash;
-  }
-
   private static final String FAVICON      = "/favicon.ico";
   private static final String ROBOTS_TXT   = "robots.txt";
   private static final String DOWNLOAD_TOC = "__download_toc";
@@ -62,10 +44,6 @@ public class RenderController {
 
     if ("/".equals(requestURI)) {
       return "redirect:" + Env.uriTop();
-    }
-
-    if ("/test-load".equals(requestURI)) {
-      return testLoad(requestURI, response);
     }
 
     if (("/" + ROBOTS_TXT).equals(requestURI)) {
@@ -91,13 +69,15 @@ public class RenderController {
     }
 
     {
-      String prefix = "/" + DOWNLOAD_TOC + ":";
+      String prefix = "/" + DOWNLOAD_TOC + "/";
       if (lowRequestUri.startsWith(prefix)) {
-        return downloadToc(lowRequestUri.substring(0, prefix.length()), response);
+        String rest             = requestURI.substring(prefix.length());
+        String uriNoBorderSlash = StrUtil.cutBorderSlash(rest);
+        return downloadToc(uriNoBorderSlash, response);
       }
     }
 
-    String uriNoBorderSlash = cutBorderSlash(requestURI);
+    String uriNoBorderSlash = StrUtil.cutBorderSlash(requestURI);
 
     Path workDir = Env.workDir();
 
@@ -109,7 +89,7 @@ public class RenderController {
       try (InputStream inputStream = getClass().getResourceAsStream(resourcePath)) {
 
         if (inputStream == null) {
-          return noFile(filePath, request, model, cutBorderSlash(resourcePath));
+          return noFile(filePath, request, model, StrUtil.cutBorderSlash(resourcePath));
         }
 
         String contentType = MimeTypeManager.probeMimeType(resourcePath);
@@ -172,7 +152,7 @@ public class RenderController {
     }
   }
 
-  private void appendToc(Model model, String uriNoBorderSlash) {
+  private Toc populateToc(String uriNoBorderSlash) {
     Toc toc = new Toc();
     toc.workDir     = Env.workDir();
     toc.targetExt   = ".md";
@@ -181,7 +161,15 @@ public class RenderController {
 
     toc.populate();
 
+    return toc;
+  }
+
+  private void appendToc(Model model, String uriNoBorderSlash) {
+
+    Toc toc = populateToc(uriNoBorderSlash);
+
     model.addAttribute("tocItems", toc.items);
+    model.addAttribute("tocDownloadReference", "/" + DOWNLOAD_TOC + "/" + uriNoBorderSlash);
   }
 
   private String noFile(Path filePath, ServletWebRequest request, Model model, String uriNoBorderSlash) {
@@ -270,95 +258,6 @@ public class RenderController {
     return null;
   }
 
-  private String downloadToc(String uri, HttpServletResponse response) {
-
-    // TODO pompei написать этот метод
-
-    return null;
-  }
-
-  //  /test-load
-  @SneakyThrows
-  private String testLoad(String requestURI, HttpServletResponse response) {
-
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
-    Path dir = Paths.get("build/tmp/md-load/md-files/" + sdf.format(new Date()));
-    copyRes("/tmp/001-hello.md", dir.resolve("001-hello.md"));
-    copyRes("/tmp/002-Boom.md", dir.resolve("002-Boom.md"));
-
-    String fd = "/usr/share/fonts/truetype/liberation/";
-
-    String f1_regular     = fd + "LiberationSansNarrow-Regular.ttf";
-    String f1_bold        = fd + "LiberationSansNarrow-Bold.ttf";
-    String f1_bold_italic = fd + "LiberationSansNarrow-BoldItalic.ttf";
-    String f1_italic      = fd + "LiberationSansNarrow-Italic.ttf";
-
-    String f2_regular     = fd + "LiberationMono-Regular.ttf";
-    String f2_bold        = fd + "LiberationMono-Bold.ttf";
-    String f2_bold_italic = fd + "LiberationMono-BoldItalic.ttf";
-    String f2_italic      = fd + "LiberationMono-Italic.ttf";
-
-    Path outputErrTxt = dir.resolve("output_err.txt");
-    Path outputPdf    = dir.resolve("__output__.pdf");
-
-    List<String> cmd = new ArrayList<>();
-    cmd.add("pandoc");
-    cmd.add("-V");
-    cmd.add("mainfont:" + f1_regular);
-    cmd.add("-V");
-    cmd.add("mainfontoptions:" + makeOptions(f1_bold, f1_italic, f1_bold_italic));
-    cmd.add("-V");
-    cmd.add("monofont:" + f2_regular);
-    cmd.add("-V");
-    cmd.add("monofontoptions:" + makeOptions(f2_bold, f2_italic, f2_bold_italic));
-    cmd.add("-V");
-    cmd.add("sansfont:" + f1_regular);
-    cmd.add("-V");
-    cmd.add("sansfontoptions:" + makeOptions(f1_bold, f1_italic, f1_bold_italic));
-    cmd.add("-V");
-    cmd.add("mathfont:" + f1_regular);
-    cmd.add("-V");
-    cmd.add("mathfontoptions:" + makeOptions(f1_bold, f1_italic, f1_bold_italic));
-    cmd.add("--pdf-engine=xelatex");
-//    cmd.add("--pdf-engine=lualatex");
-    cmd.add("-o __output__.pdf");
-    cmd.add("001-hello.md");
-    cmd.add("002-Boom.md");
-
-    System.out.println("1lmHzIwPJ8 :: CMD " + cmd.stream().map(s -> "'" + s + "'").collect(Collectors.joining(" ")));
-
-    Process pandoc = new ProcessBuilder().directory(dir.toFile())
-                                         .command(cmd)
-                                         .redirectOutput(ProcessBuilder.Redirect.DISCARD)
-                                         .redirectError(ProcessBuilder.Redirect.to(outputErrTxt.toFile()))
-                                         .start();
-
-    int exitCode = pandoc.waitFor();
-
-    if (exitCode != 0) {
-      String errorText = Files.readString(outputErrTxt, StandardCharsets.UTF_8);
-      throw new RuntimeException("ZRM1xfDG8x :: Run exitCode = " + exitCode + "\n\n" + errorText);
-    }
-
-    String fileName = "Чё-то там крутое.pdf";
-
-    response.setHeader(
-      "Content-Disposition",
-      "attachment; filename=\"" + UriEscape.escape(fileName) + "\""
-    );
-    //response.setHeader("Content-Type", "text/plain; charset=UTF-8");
-    response.setHeader("Content-Type", "application/pdf");
-
-    byte[] bytes = Files.readAllBytes(outputPdf);
-    //response.setHeader("Content-Length", "" + bytes.length);
-    response.getOutputStream().write(bytes);
-
-    response.flushBuffer();
-
-    return null;
-  }
-
   public static String makeOptions(String bold, String italic, String boldItalic) {
     LinkedHashMap<String, String> m = new LinkedHashMap<>();
     m.put("BoldFont", bold);
@@ -385,6 +284,27 @@ public class RenderController {
         out.write(resourceAsStream.readAllBytes());
       }
     }
+  }
+
+  @SneakyThrows
+  private String downloadToc(String uriNoBorderSlash, HttpServletResponse response) {
+
+    Toc toc = populateToc(uriNoBorderSlash);
+
+    try (MdConverter converter = new MdConverter()) {
+      converter.toc         = toc;
+      converter.tmpDir      = Env.tmpDir();
+      converter.clearTmpDir = Env.clearTmpDir();
+
+      converter.convert();
+
+      DownUtil.downloadFile(response,
+                            converter.downloadFile,
+                            converter.contentType,
+                            converter.downloadFileName);
+    }
+
+    return null;
   }
 
 }

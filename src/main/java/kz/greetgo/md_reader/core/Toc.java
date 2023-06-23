@@ -31,6 +31,8 @@ public class Toc {
 
   public static final String HIDE_THIS_DIR = ".hide_this_dir";
 
+  public Path startDir;
+
   public void populate() {
 
     if (!Files.exists(workDir)) {
@@ -368,6 +370,7 @@ public class Toc {
     Element root = new Element(null, 0);
 
     fillRoot(startDir, root);
+    this.startDir = startDir;
 
     root.correctRefPathInChildren();
 

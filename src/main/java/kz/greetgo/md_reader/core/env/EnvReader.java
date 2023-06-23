@@ -26,4 +26,17 @@ class EnvReader {
     return Optional.empty();
   }
 
+  public static boolean bool(String envName) {
+    return str(envName).map(EnvReader::strToBool).orElse(false);
+  }
+
+  private static boolean strToBool(String str) {
+    if (str == null) {
+      return false;
+    }
+    return switch (str.trim()) {
+      case "y", "yes", "1", "true", "t" -> true;
+      default -> false;
+    };
+  }
 }

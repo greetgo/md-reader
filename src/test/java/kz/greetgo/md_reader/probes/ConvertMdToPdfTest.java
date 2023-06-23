@@ -19,6 +19,8 @@ import kz.greetgo.md_reader.test_utils.ParentTestClass;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
+import static kz.greetgo.md_reader.core.MdConverter.execCmd;
+
 class ConvertMdToPdfTest extends ParentTestClass {
 
 
@@ -238,7 +240,6 @@ class ConvertMdToPdfTest extends ParentTestClass {
 
     List<String> outL = new ArrayList<>();
 
-//    outL.add("-o __output__.pdf");
     outL.add("-s");
     outL.add("-o __output__.html");
 
@@ -258,29 +259,5 @@ class ConvertMdToPdfTest extends ParentTestClass {
 
   }
 
-  private static void execCmd(Path dir,
-                              Path outputErrTxt,
-                              List<String> cmd,
-                              List<String> outL,
-                              List<String> inL) throws IOException, InterruptedException {
-    List<String> res = new ArrayList<>();
-    res.addAll(cmd);
-    res.addAll(outL);
-    res.addAll(inL);
-
-    System.out.println("8Mc1o2sDr0 :: CMD " + res.stream().map(s -> "'" + s + "'").collect(Collectors.joining(" ")));
-    Process pandoc = new ProcessBuilder().directory(dir.toFile())
-                                         .command(res)
-                                         .redirectOutput(ProcessBuilder.Redirect.DISCARD)
-                                         .redirectError(ProcessBuilder.Redirect.to(outputErrTxt.toFile()))
-                                         .start();
-
-    int exitCode = pandoc.waitFor();
-
-    if (exitCode != 0) {
-      String errorText = Files.readString(outputErrTxt, StandardCharsets.UTF_8);
-      throw new RuntimeException("KWf67739gd :: Run exitCode = " + exitCode + "\n\n" + errorText);
-    }
-  }
 
 }
