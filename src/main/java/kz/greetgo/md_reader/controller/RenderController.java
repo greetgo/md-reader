@@ -45,6 +45,9 @@ public class RenderController {
     if ("/".equals(requestURI)) {
       return "redirect:" + Env.uriTop();
     }
+    if ("/yandex_5de2b922f288eb40.html".equals(requestURI)) {
+      return yandexVerify(response);
+    }
 
     if (("/" + ROBOTS_TXT).equals(requestURI)) {
       return robots(response);
@@ -135,7 +138,7 @@ public class RenderController {
     return noFile(filePath, request, model, uriNoBorderSlash);
   }
 
-  @SneakyThrows
+@SneakyThrows
   private String renderMarkdownFile(Path filePath, Model model, String uriNoBorderSlash) {
     appendCommonAttributes(filePath, model, uriNoBorderSlash);
 
@@ -306,5 +309,27 @@ public class RenderController {
 
     return null;
   }
+
+  @SneakyThrows
+  private String yandexVerify(HttpServletResponse response) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("""
+                <html>
+                    <head>
+                        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    </head>
+                    <body>Verification: 5de2b922f288eb40</body>
+                </html>
+                """);
+
+    response.addHeader("Content-Type", "text/html; charset=UTF-8");
+
+    response.getOutputStream().write(sb.toString().getBytes(StandardCharsets.UTF_8));
+
+    response.flushBuffer();
+
+    return null;
+  }
+
 
 }
