@@ -9,6 +9,7 @@
       <#--noinspection FtlReferencesInspection-->
     <title>${title}</title>
 
+    <link rel="stylesheet" href="/static/font.css">
     <link rel="stylesheet" href="/static/common.css">
     <link rel="stylesheet" href="/static/header.css">
     <link rel="stylesheet" href="/static/breadcrumbs.css">
