@@ -129,10 +129,11 @@ public class MdConverter implements AutoCloseable {
 
     List<String> outL = new ArrayList<>();
 
-    Path resultPdf = tmpWorkDir.resolve("__output_ok__.pdf");
-    resultPdf.toFile().getParentFile().mkdirs();
+    Path resultHtml = tmpWorkDir.resolve("__output_ok__.html");
+    resultHtml.toFile().getParentFile().mkdirs();
 
-    outL.add("-o " + resultPdf);
+    outL.add("-s");
+    outL.add("-o " + resultHtml);
 
     {
       Execute exec = Execute.of(parentPath, tmpWorkDir.resolve("__output_err1__.txt"))
@@ -149,10 +150,11 @@ public class MdConverter implements AutoCloseable {
       }
     }
 
-    outL.clear();
-    outL.add("-s");
-    outL.add("-o __output_ok__.html");
+    Path resultPdf = tmpWorkDir.resolve("__output_ok__.pdf");
+    resultPdf.toFile().getParentFile().mkdirs();
 
+    outL.clear();
+    outL.add("-o " + resultPdf);
     {
       Execute exec = Execute.of(parentPath, tmpWorkDir.resolve("__output_err2__.txt"))
                             .cmd(cmd)
@@ -167,6 +169,8 @@ public class MdConverter implements AutoCloseable {
         return;
       }
     }
+
+
 
     downloadFile     = resultPdf;
     contentType      = ContentType.Pdf;

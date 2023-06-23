@@ -35,7 +35,6 @@
     <div class="header-caption">
         <#--noinspection FtlReferencesInspection-->
       <a href="/">${headerCaption}</a>
-      <a href="/test-load">load test file</a>
     </div>
     <div class="search-line">
       <script async src="https://cse.google.com/cse.js?cx=b193cba5cd5844c1a">
