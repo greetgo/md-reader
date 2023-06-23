@@ -45,6 +45,7 @@
   color: #ffffff;
   transition: border-bottom 250ms;
   border-bottom: 1px dashed transparent;
+  user-select: none;
 }
 
 .content .left .caption a:hover {
