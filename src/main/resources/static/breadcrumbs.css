@@ -9,6 +9,10 @@
 
   padding-top: 30px;
   background: #2f80ed;
+  position: fixed;
+  top: 62px;
+  width: 100%;
+  z-index: 1000;
 }
 
 .breadcrumbs-item {
@@ -27,4 +31,7 @@
 .breadcrumbs-item-separator {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  color: #ffffff;
+  cursor: default;
+  user-select: none;
 }

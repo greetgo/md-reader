@@ -7,15 +7,20 @@
 
   height: 400px;
   background: #2f80ed;
+  position: fixed;
+  width: 100%;
+  top: 119px;
 }
 
-.content .main {
-
+.main {
+  margin-top: 119px;
+  width: fit-content;
+  position: relative;
 }
 
 .markdown, .dir-list, .no-file {
-  max-width: 55rem;
-  width: 55rem;
+  max-width: 882px;
+  width: 882px;
   background-color: white;
   margin-left: 140px;
   border: #dfdfdf solid 1px;
@@ -24,10 +29,10 @@
 
 
 .content .left {
-  padding-top: 1rem;
   max-height: 350px;
-  width: 100%;
   margin-right: 10px;
+  margin-left: 1070px;
+  width: 100%;
 }
 
 .content .left .caption {

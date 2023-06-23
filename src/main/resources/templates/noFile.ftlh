@@ -7,10 +7,10 @@
     <div class="left scroll-bar">
         <@base.toc/>
     </div>
-    <div class="main">
-      <div class="no-file">
-          ${title}: ${resourceName}
-      </div>
+  </div>
+  <div class="main">
+    <div class="no-file">
+        ${title}: ${resourceName}
     </div>
   </div>
 <@base.footer/>
