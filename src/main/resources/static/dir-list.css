@@ -10,3 +10,14 @@
   padding-top: 0.5rem;
   line-height: 1.5rem;
 }
+
+.dir-item md-ref {
+  color: #2f80ed;
+  transition: border-bottom 250ms;
+  border-bottom: 1px dashed transparent;
+  user-select: none;
+}
+
+.dir-item md-ref:hover {
+  border-bottom: 1px dashed #2f80ed;
+}
