@@ -9,11 +9,11 @@
   background: #2f80ed;
   position: fixed;
   width: 100%;
-  top: 119px;
+  top: 120px;
 }
 
 .main {
-  margin-top: 119px;
+  margin-top: 120px;
   width: fit-content;
   position: relative;
 }
@@ -25,6 +25,7 @@
   margin-left: 140px;
   border: #dfdfdf solid 1px;
   box-shadow: 0 0 51px 8px rgba(34, 60, 80, 0.2);
+  min-height: 460px;
 }
 
 
@@ -42,10 +43,12 @@
 .content .left .caption a {
   text-decoration: none;
   color: #ffffff;
+  transition: border-bottom 250ms;
+  border-bottom: 1px dashed transparent;
 }
 
 .content .left .caption a:hover {
-  text-decoration: underline;
+  border-bottom: 1px dashed #ffffff;
 }
 
 .content .left .selected {
