@@ -1,12 +1,12 @@
 .header {
-  padding-left: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-
   display: flex;
   flex-direction: row;
 
-  height: 61px;
+  height: 62px;
+
+  align-items: center;
+  background-color: #ffffff;
+  padding: 0 110px
 }
 
 .header-caption {
@@ -24,7 +24,6 @@
 }
 
 .header .search-line {
-  margin-left: auto;
   width: 30rem;
   margin-right: 1rem;
 }

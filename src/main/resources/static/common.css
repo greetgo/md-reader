@@ -10,3 +10,36 @@ html, body {
   padding: 0;
   margin: 0;
 }
+
+/* region scroll-bar */
+
+.scroll-bar {
+  overflow-y: auto;
+
+  scrollbar-face-color: #00000003;
+  scrollbar-track-color: rgba(0, 0, 0, 0.1);
+  /*noinspection CssUnknownProperty*/
+  scrollbar-color: #a5a2a2 rgba(0, 0, 0, 0.1);
+  /*noinspection CssUnknownProperty*/
+  scrollbar-width: thin;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb {
+  position: absolute;
+  border-radius: 35px;
+  background-color: #dfdfdf;
+  box-shadow: inset 0 0 0 1px #cfcfcf;
+}
+
+.scroll-bar::-webkit-scrollbar-track {
+  position: absolute;
+  border-radius: 10px;
+  background-color: #efefef;
+}
+
+.scroll-bar::-webkit-scrollbar {
+  position: absolute;
+  width: 6px;
+}
+
+/* endregion */

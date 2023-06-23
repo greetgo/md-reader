@@ -3,8 +3,10 @@
   display: flex;
   flex-direction: row-reverse;
   column-gap: 0.5rem;
-  padding-left: 1rem;
   justify-content: flex-end;
+
+  height: 400px;
+  background: #2f80ed;
 }
 
 .content .main {
@@ -15,7 +17,7 @@
   max-width: 55rem;
   width: 55rem;
   background-color: white;
-  margin-left: 6rem;
+  margin-left: 140px;
   border: #dfdfdf solid 1px;
   box-shadow: 0 0 51px 8px rgba(34, 60, 80, 0.2);
 }
@@ -23,6 +25,9 @@
 
 .content .left {
   padding-top: 1rem;
+  max-height: 350px;
+  width: 100%;
+  margin-right: 10px;
 }
 
 .content .left .caption {
@@ -31,6 +36,7 @@
 
 .content .left .caption a {
   text-decoration: none;
+  color: #ffffff;
 }
 
 .content .left .caption a:hover {

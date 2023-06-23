@@ -4,7 +4,7 @@
 <@base.header/>
 <@base.breadcrumbs/>
   <div class="content">
-    <div class="left">
+    <div class="left scroll-bar">
         <@base.toc/>
     </div>
     <div class="main">

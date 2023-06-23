@@ -1,25 +1,23 @@
 .breadcrumbs {
   display: flex;
   font-size: 90%;
-  padding-top: 0.1rem;
-  padding-left: 1rem;
-  padding-bottom: 0.3rem;
+  padding-left: 140px;
+  padding-bottom: 10px;
 
   /*border-bottom: 1px solid saddlebrown;*/
   /*border-top: 1px solid saddlebrown;*/
+
+  padding-top: 30px;
+  background: #2f80ed;
 }
 
 .breadcrumbs-item {
   cursor: pointer;
-  color: #006385;
+  color: #ffffff;
 }
 
 .breadcrumbs-item:hover {
   text-decoration: underline;
-}
-
-.breadcrumbs-item:first-child {
-  margin-left: 6.2rem;
 }
 
 .breadcrumbs-item:last-child {
