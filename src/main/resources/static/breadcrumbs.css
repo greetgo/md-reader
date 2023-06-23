@@ -37,3 +37,10 @@
   cursor: default;
   user-select: none;
 }
+
+@media only screen and (max-width: 768px) {
+  .breadcrumbs {
+    padding-top: 10px;
+    padding-left: 10px;
+  }
+}

@@ -90,3 +90,25 @@
 .content .left .level8 {
   padding-left: 3.5rem;
 }
+
+@media only screen and (max-width: 768px) {
+  .content {
+    top: 101px;
+  }
+
+  .main {
+    width: 100%;
+    display: flex;
+    margin-top: 101px;
+  }
+
+  .markdown, .dir-list, .no-file {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+
+  .markdown img {
+    width: 100% !important;
+  }
+}
