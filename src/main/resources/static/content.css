@@ -5,7 +5,7 @@
   column-gap: 0.5rem;
   justify-content: flex-end;
 
-  height: 400px;
+  max-height: 700px;
   background: #2f80ed;
   position: fixed;
   width: 100%;
@@ -30,10 +30,11 @@
 
 
 .content .left {
-  max-height: 350px;
+  max-height: 700px;
   margin-right: 10px;
   margin-left: 1100px;
   width: 100%;
+  padding-bottom: 20px;
 }
 
 .content .left .caption {
