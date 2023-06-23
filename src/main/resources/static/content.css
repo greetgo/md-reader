@@ -32,12 +32,13 @@
 .content .left {
   max-height: 350px;
   margin-right: 10px;
-  margin-left: 1070px;
+  margin-left: 1100px;
   width: 100%;
 }
 
 .content .left .caption {
   line-height: 135%;
+  margin-top: 1px;
 }
 
 .content .left .caption a {
