@@ -63,9 +63,9 @@
         <a href="${item.reference}">${item.caption}</a>
       </div>
     </#list>
-    <div class="download-toc">
-      <a href="${tocDownloadReference}">Скачать в формате PDF</a>
-    </div>
+<#--    <div class="download-toc">-->
+<#--      <a href="${tocDownloadReference}">Скачать в формате PDF</a>-->
+<#--    </div>-->
 </#macro>
 
 <#macro footer>
