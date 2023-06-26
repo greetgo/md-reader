@@ -94,12 +94,19 @@
 @media only screen and (max-width: 768px) {
   .content {
     top: 101px;
+    max-height: 110px;
+    z-index: 1000;
+  }
+
+  .content .left {
+    margin-left: 10px;
+    max-height: 110px;
   }
 
   .main {
     width: 100%;
     display: flex;
-    margin-top: 101px;
+    margin-top: 211px;
   }
 
   .markdown, .dir-list, .no-file {
