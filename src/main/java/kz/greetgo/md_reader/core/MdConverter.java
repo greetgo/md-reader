@@ -12,7 +12,13 @@ import java.util.Date;
 import java.util.List;
 import kz.greetgo.md_reader.model.TocItem;
 import kz.greetgo.md_reader.util.ContentType;
+import kz.greetgo.md_reader.util.FileUtil;
+import kz.greetgo.md_reader.util.MdUtil;
+import kz.greetgo.md_reader.util.StrUtil;
+import kz.greetgo.md_reader.util.XmlDomVisiting;
 import lombok.SneakyThrows;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import static kz.greetgo.md_reader.util.StrUtil.cutBorderSlash;
 
@@ -112,9 +118,8 @@ public class MdConverter implements AutoCloseable {
     }
 
 
-    String caption = Toc.toCaption(toc.startDir, toc.targetExt);
-
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'_HH_mm_ss_SSS");
+    String           caption = Toc.toCaption(toc.startDir, toc.targetExt);
+    SimpleDateFormat sdf     = new SimpleDateFormat("yyyy-MM-dd'T'_HH_mm_ss_SSS");
     tmpWorkDir = tmpDir.toAbsolutePath().resolve("converter-" + sdf.format(new Date()));
 
     System.out.println("1AZ7vc0r0I :: caption = " + caption.replaceAll("\"", ""));
@@ -171,10 +176,68 @@ public class MdConverter implements AutoCloseable {
     }
 
 
-
     downloadFile     = resultPdf;
     contentType      = ContentType.Pdf;
     downloadFileName = caption + ".pdf";
+
+  }
+
+  private int htmlFileIndex;
+  private int imgFileIndex;
+
+  public void convert1() {
+    prepareMdFileList();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'_HH_mm_ss_SSS");
+    tmpWorkDir = tmpDir.toAbsolutePath().resolve("converter-" + sdf.format(new Date()));
+
+    htmlFileIndex = imgFileIndex = 1;
+
+    for (final String mdFileName : mdFileList) {
+      Path mdFilePath = parentPath.resolve(mdFileName);
+      prepareHtmlFileFrom(mdFilePath);
+    }
+
+    String caption = Toc.toCaption(toc.startDir, toc.targetExt);
+
+    System.out.println("6oMWFrzRbG :: caption = " + caption);
+
+  }
+
+  private void prepareHtmlFileFrom(Path mdFilePath) {
+
+    Path htmlFile = tmpWorkDir.resolve("html-" + StrUtil.toLen(htmlFileIndex++, 5) + ".html");
+    htmlFile.toFile().getParentFile().mkdirs();
+
+    Path htmlFileParent = mdFilePath.toFile().getParentFile().toPath();
+
+    Document htmlDoc = MdUtil.xmlTextToDoc(MdUtil.correctHtml("<div>" + MdUtil.mdToHtml(mdFilePath) + "</div>"));
+
+    Element top = htmlDoc.getDocumentElement();
+
+    XmlDomVisiting.visit(top, element -> {
+
+      if ("img".equalsIgnoreCase(element.getTagName())) {
+        String src = element.getAttribute("src");
+        if (!src.isBlank()) {
+          Path srcFile = htmlFileParent.resolve(src);
+          if (Files.isRegularFile(srcFile)) {
+            String ext     = FileUtil.extractExt(srcFile);
+            Path   imgFile = tmpWorkDir.resolve("img-" + StrUtil.toLen(imgFileIndex++, 5) + ext);
+            FileUtil.copyFile(srcFile, imgFile);
+            element.setAttribute("src", imgFile.toFile().getName());
+          }
+        }
+      }
+
+      if (!element.getAttribute("id").isBlank()) {
+        element.removeAttribute("id");
+      }
+
+    });
+
+    String htmlText = MdUtil.xmlDocToText(MdUtil.extractFirstTagInBody(htmlDoc));
+
+    FileUtil.saveFile(htmlFile, htmlText.substring("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".length()));
 
   }
 }

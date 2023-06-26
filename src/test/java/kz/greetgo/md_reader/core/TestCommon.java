@@ -45,20 +45,23 @@ public abstract class TestCommon {
         fileOutputStream.write(contentStr.getBytes(StandardCharsets.UTF_8));
       }
     } else {
-      String contentStr = TestCommon.contentToStr(content);
+      byte[] contentBytes = TestCommon.contentToBytes(content);
       try (FileOutputStream fileOutputStream = new FileOutputStream(filePath.toFile())) {
-        fileOutputStream.write(contentStr.getBytes(StandardCharsets.UTF_8));
+        fileOutputStream.write(contentBytes);
       }
     }
     return filePath;
   }
 
   @SneakyThrows
-  public static String contentToStr(Object content) {
+  public static byte[] contentToBytes(Object content) {
+    if (content instanceof byte[]) {
+      return (byte[]) content;
+    }
     if (content instanceof CharSequence) {
-      return content.toString();
+      return content.toString().getBytes(StandardCharsets.UTF_8);
     }
     ObjectMapper objectMapper = new ObjectMapper();
-    return objectMapper.writeValueAsString(content);
+    return objectMapper.writeValueAsString(content).getBytes(StandardCharsets.UTF_8);
   }
 }

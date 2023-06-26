@@ -1,14 +1,31 @@
 package kz.greetgo.md_reader.core;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import kz.greetgo.md_reader.core.md_converter_data.MdConverterAnchor;
+import kz.greetgo.md_reader.util.DomVisitor;
+import kz.greetgo.md_reader.util.MdUtil;
+import kz.greetgo.md_reader.util.XmlDomVisiting;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MdConverterTest extends MdConverterTestParent {
+
+  private final MdConverterAnchor res = new MdConverterAnchor();
 
   @Test
   void prepareMdFileList() {
@@ -66,4 +83,159 @@ class MdConverterTest extends MdConverterTestParent {
       .isTrue();
   }
 
+  @Test
+  @SneakyThrows
+  void probe() {
+
+    file("some/pics/wow/buttonAddingNewProcess.png", res.asBytes("buttonAddingNewProcess.png"));
+    file("some/pics/wow/status/sysctl-on-kubernetes.png", res.asBytes("sysctl-on-kubernetes.png"));
+    Path md1 = file("some/toc2/file1.md", """
+      ## Супер заголовок
+            
+      Какой-то текст и ещё чё-то.
+            
+      <img width="" src="../pics/wow/buttonAddingNewProcess.png">
+            
+      Текст между картинками с <b>жирным</b> и <i>курсивным</i> <b><i>текстом</i></b>.
+            
+      ![](../pics/wow/status/sysctl-on-kubernetes.png)
+            
+      Это какая-то картинка
+            
+      ### Это подзаголовок
+            
+      Текст под подзаголовком. На карточку объекта можно добавлять неограниченное количество
+      вложенных объектов Департаменты и Пользователи. Подробно по вложенным объектам и их
+      настройкам описано во главе Вложенные объекты.
+            
+      """);
+
+    file("some/toc10/inner/pics/sixSettings.png", res.asBytes("sixSettings.png"));
+    Path md2 = file("some/toc10/inner/file2.md", """
+      ## Заголовок второго файла
+            
+      Текст второго файла.
+            
+      ![](pics/sixSettings.png)
+            
+      Это картинка второго файла.
+            
+      ### Это подзаголовок второго файла
+            
+      Текст под подзаголовком второго файла. Подчиненные - подчиненные автора, объекте,
+      будут иметь права на указанные операции при настройке прав, если автор указан как
+      руководитель в департаменте в которую он входит.
+            
+      """);
+
+    Document htmlDoc1 = MdUtil.xmlTextToDoc(MdUtil.correctHtml("<div>" + MdUtil.mdToHtml(md1) + "</div>"));
+    Document htmlDoc2 = MdUtil.xmlTextToDoc(MdUtil.correctHtml("<div>" + MdUtil.mdToHtml(md2) + "</div>"));
+
+    Element body1 = MdUtil.extractFirstTagInBody(htmlDoc1);
+    Element body2 = MdUtil.extractFirstTagInBody(htmlDoc2);
+
+    XmlDomVisiting.visit(body1, new DomVisitor() {
+      @Override
+      public void visitElement(Element element) {
+        if ("img".equalsIgnoreCase(element.getTagName())) {
+          String src = element.getAttribute("src");
+          if (!src.isBlank()) {
+            System.out.println("Vwc0oz2kaD :: img.src = " + src);
+            element.setAttribute("src", "asd/" + src);
+          }
+        }
+      }
+    });
+
+    Document resultDoc = DocumentBuilderFactory.newInstance()
+                                               .newDocumentBuilder()
+                                               .newDocument();
+
+    Element resultBody = resultDoc.createElement("body");
+    resultDoc.appendChild(resultBody);
+
+    {
+      NodeList childNodes = body1.getChildNodes();
+      for (int i = 0; i < childNodes.getLength(); i++) {
+        Node child = resultDoc.importNode(childNodes.item(i), true);
+        resultBody.appendChild(child);
+      }
+    }
+    {
+      NodeList childNodes = body2.getChildNodes();
+      for (int i = 0; i < childNodes.getLength(); i++) {
+        Node child = resultDoc.importNode(childNodes.item(i), true);
+        resultBody.appendChild(child);
+      }
+    }
+
+    Transformer transformer = TransformerFactory.newInstance()
+                                                .newTransformer();
+
+    DOMSource             source = new DOMSource(resultDoc);
+    ByteArrayOutputStream out    = new ByteArrayOutputStream();
+    StreamResult          result = new StreamResult(out);
+    transformer.transform(source, result);
+
+    System.out.println("IEt1cWrWxr :: OUT :\n\n" + out.toString(StandardCharsets.UTF_8) + "\n\n");
+  }
+
+
+  @Test
+  @SneakyThrows
+  void convert() {
+
+    file("some/pics/wow/buttonAddingNewProcess.png", res.asBytes("buttonAddingNewProcess.png"));
+    file("some/pics/wow/status/sysctl-on-kubernetes.png", res.asBytes("sysctl-on-kubernetes.png"));
+    Path md1 = file("some/toc2/file1.md", """
+      ## Супер заголовок
+            
+      Какой-то текст и ещё чё-то.
+            
+      <img width="" src="../pics/wow/buttonAddingNewProcess.png">
+            
+      Текст между картинками с <b>жирным</b> и <i>курсивным</i> <b><i>текстом</i></b>.
+            
+      ![](../pics/wow/status/sysctl-on-kubernetes.png)
+            
+      Это какая-то картинка
+            
+      ### Это подзаголовок
+            
+      Текст под подзаголовком. На карточку объекта можно добавлять неограниченное количество
+      вложенных объектов Департаменты и Пользователи. Подробно по вложенным объектам и их
+      настройкам описано во главе Вложенные объекты.
+            
+      """);
+
+    file("some/toc10/inner/pics/sixSettings.png", res.asBytes("sixSettings.png"));
+    Path md2 = file("some/toc10/inner/file2.md", """
+      ## Заголовок второго файла
+            
+      Текст второго файла.
+            
+      ![](pics/sixSettings.png)
+            
+      Это картинка второго файла.
+            
+      ### Это подзаголовок второго файла
+            
+      Текст под подзаголовком второго файла. Подчиненные - подчиненные автора, объекте,
+      будут иметь права на указанные операции при настройке прав, если автор указан как
+      руководитель в департаменте в которую он входит.
+            
+      """);
+
+    converter.toc.uriNoSlash = "some/toc10/inner/file2.md";
+
+    converter.toc.populate();
+
+    //
+    //
+    converter.convert1();
+    //
+    //
+
+
+  }
 }
