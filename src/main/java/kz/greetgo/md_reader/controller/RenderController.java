@@ -225,6 +225,7 @@ public class RenderController {
     model.addAttribute("caption", caption);
     model.addAttribute("title", caption + " - " + Env.headerCaption());
     model.addAttribute("headerCaption", Env.headerCaption());
+    model.addAttribute("host", Env.host());
   }
 
   private void appendBreadcrumbs(Model model, String uriNoBorderSlash) {
