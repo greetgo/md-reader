@@ -97,30 +97,33 @@
 
 @media only screen and (max-width: 768px) {
   .content {
-    top: 97px;
-    max-height: 110px;
+    top: 100px;
+    min-height: 410px;
+    max-height: 410px;
     z-index: 1000;
     padding-top: 5px;
+    display: none;
   }
 
   .content .left {
     margin-left: 10px;
-    max-height: 110px;
+    max-height: 410px;
     margin-bottom: 5px;
   }
 
   .search-line-mobile {
-    display: block;
     position: fixed;
     top: 62px;
     z-index: 1000;
     background-color: #2f80ed;
+    padding-top: 3px;
   }
 
   .main {
     width: 100%;
     display: flex;
-    margin-top: 246px;
+    margin-top: 101px;
+    transition: margin-top 250ms;
   }
 
   .markdown, .dir-list, .no-file {

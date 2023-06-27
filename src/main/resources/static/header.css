@@ -68,6 +68,7 @@
   .header .header-menu svg {
     width: 20px;
     height: 20px;
-    fill: #82898c
+    fill: #82898c;
+    transition: fill 250ms;
   }
 }

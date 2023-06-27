@@ -42,6 +42,7 @@
   .breadcrumbs {
     padding-top: 10px;
     padding-left: 10px;
-    top: 207px;
+    top: 62px;
+    transition: top 250ms;
   }
 }
