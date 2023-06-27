@@ -37,7 +37,7 @@
 <#macro header>
   <div class="header">
     <div class="header-caption">
-      <img class="header-logo-img" src="/logo.png" alt="mybpm!"/>
+      <md-ref href="/"><img class="header-logo-img" src="/logo.png" alt="mybpm!"/></md-ref>
     </div>
     <div class="search-line">
         <@yandex.searchLine />

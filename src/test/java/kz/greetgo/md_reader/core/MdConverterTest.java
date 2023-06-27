@@ -11,6 +11,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import kz.greetgo.md_reader.core.md_converter_data.MdConverterAnchor;
+import kz.greetgo.md_reader.util.ContentType;
 import kz.greetgo.md_reader.util.DomVisitor;
 import kz.greetgo.md_reader.util.MdUtil;
 import kz.greetgo.md_reader.util.XmlDomVisiting;
@@ -187,7 +188,7 @@ class MdConverterTest extends MdConverterTestParent {
 
     file("some/pics/wow/buttonAddingNewProcess.png", res.asBytes("buttonAddingNewProcess.png"));
     file("some/pics/wow/status/sysctl-on-kubernetes.png", res.asBytes("sysctl-on-kubernetes.png"));
-    Path md1 = file("some/toc2/file1.md", """
+    file("some/toc2/file1.md", """
       ## Супер заголовок
             
       Какой-то текст и ещё чё-то.
@@ -209,7 +210,7 @@ class MdConverterTest extends MdConverterTestParent {
       """);
 
     file("some/toc10/inner/pics/sixSettings.png", res.asBytes("sixSettings.png"));
-    Path md2 = file("some/toc10/inner/file2.md", """
+    file("some/toc10/inner/file2.md", """
       ## Заголовок второго файла
             
       Текст второго файла.
@@ -232,10 +233,12 @@ class MdConverterTest extends MdConverterTestParent {
 
     //
     //
-    converter.convert1();
+    converter.convert();
     //
     //
 
-
+    assertThat(converter.contentType).isEqualTo(ContentType.Pdf);
+    assertThat(converter.downloadFile).exists();
+    assertThat(converter.downloadFileName).isNotNull().endsWith(".pdf");
   }
 }

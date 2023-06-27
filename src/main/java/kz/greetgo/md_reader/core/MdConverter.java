@@ -1,6 +1,7 @@
 package kz.greetgo.md_reader.core;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -20,6 +21,7 @@ import lombok.SneakyThrows;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import static java.util.Objects.requireNonNull;
 import static kz.greetgo.md_reader.util.StrUtil.cutBorderSlash;
 
 public class MdConverter implements AutoCloseable {
@@ -86,7 +88,6 @@ public class MdConverter implements AutoCloseable {
     }
   }
 
-
   public static int execCmd(Path dir,
                             Path outputErrTxt,
                             List<String> cmd,
@@ -107,110 +108,24 @@ public class MdConverter implements AutoCloseable {
     return pandoc.waitFor();
   }
 
-  @SneakyThrows
-  public void convert() {
-
-    prepareMdFileList();
-
-    System.out.println("A6M7Nz5S9A :: WORK DIR: " + toc.workDir);
-    for (final String path : mdFileList) {
-      System.out.println("wtB8Qs1eYB :: md - " + path);
-    }
-
-
-    String           caption = Toc.toCaption(toc.startDir, toc.targetExt);
-    SimpleDateFormat sdf     = new SimpleDateFormat("yyyy-MM-dd'T'_HH_mm_ss_SSS");
-    tmpWorkDir = tmpDir.toAbsolutePath().resolve("converter-" + sdf.format(new Date()));
-
-    System.out.println("1AZ7vc0r0I :: caption = " + caption.replaceAll("\"", ""));
-
-    List<String> cmd = new ArrayList<>();
-    cmd.add("pandoc");
-    cmd.add("--metadata");
-    //noinspection SpellCheckingInspection
-    cmd.add("pagetitle=\"" + caption.replaceAll("\"", "") + "\"");
-    cmd.add("--pdf-engine=wkhtmltopdf");
-    cmd.add("--css=main.css");
-
-    List<String> outL = new ArrayList<>();
-
-    Path resultHtml = tmpWorkDir.resolve("__output_ok__.html");
-    resultHtml.toFile().getParentFile().mkdirs();
-
-    outL.add("-s");
-    outL.add("-o " + resultHtml);
-
-    {
-      Execute exec = Execute.of(parentPath, tmpWorkDir.resolve("__output_err1__.txt"))
-                            .cmd(cmd)
-                            .cmd(outL)
-                            .cmd(mdFileList)
-                            .execute();
-
-      if (exec.exitCode != 0) {
-        downloadFileName = "ERR-" + toc.uriNoSlash.replace('/', '_').replace('.', '_') + ".txt";
-        contentType      = ContentType.Text;
-        downloadFile     = exec.err();
-        return;
-      }
-    }
-
-    Path resultPdf = tmpWorkDir.resolve("__output_ok__.pdf");
-    resultPdf.toFile().getParentFile().mkdirs();
-
-    outL.clear();
-    outL.add("-o " + resultPdf);
-    {
-      Execute exec = Execute.of(parentPath, tmpWorkDir.resolve("__output_err2__.txt"))
-                            .cmd(cmd)
-                            .cmd(outL)
-                            .cmd(mdFileList)
-                            .execute();
-
-      if (exec.exitCode != 0) {
-        downloadFileName = "ERR-" + toc.uriNoSlash.replace('/', '_').replace('.', '_') + ".txt";
-        contentType      = ContentType.Text;
-        downloadFile     = exec.err();
-        return;
-      }
-    }
-
-
-    downloadFile     = resultPdf;
-    contentType      = ContentType.Pdf;
-    downloadFileName = caption + ".pdf";
-
-  }
-
   private int htmlFileIndex;
   private int imgFileIndex;
 
-  public void convert1() {
-    prepareMdFileList();
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'_HH_mm_ss_SSS");
-    tmpWorkDir = tmpDir.toAbsolutePath().resolve("converter-" + sdf.format(new Date()));
-
-    htmlFileIndex = imgFileIndex = 1;
-
-    for (final String mdFileName : mdFileList) {
-      Path mdFilePath = parentPath.resolve(mdFileName);
-      prepareHtmlFileFrom(mdFilePath);
-    }
-
-    String caption = Toc.toCaption(toc.startDir, toc.targetExt);
-
-    System.out.println("6oMWFrzRbG :: caption = " + caption);
-
+  private static String htmlFileByIndex(int index) {
+    return "html-" + StrUtil.toLen(index, 5) + ".html";
   }
 
-  private void prepareHtmlFileFrom(Path mdFilePath) {
+  private String prepareHtmlFileFrom(Path mdFilePath) {
 
-    Path htmlFile = tmpWorkDir.resolve("html-" + StrUtil.toLen(htmlFileIndex++, 5) + ".html");
+    String htmlFileName = htmlFileByIndex(++htmlFileIndex);
+
+    Path htmlFile = tmpWorkDir.resolve(htmlFileName);
     htmlFile.toFile().getParentFile().mkdirs();
+
 
     Path htmlFileParent = mdFilePath.toFile().getParentFile().toPath();
 
-    Document htmlDoc = MdUtil.xmlTextToDoc(MdUtil.correctHtml("<div>" + MdUtil.mdToHtml(mdFilePath) + "</div>"));
+    Document htmlDoc = MdUtil.xmlTextToDoc(MdUtil.correctHtml("<div class=\"markdown\">" + MdUtil.mdToHtml(mdFilePath) + "</div>"));
 
     Element top = htmlDoc.getDocumentElement();
 
@@ -222,7 +137,7 @@ public class MdConverter implements AutoCloseable {
           Path srcFile = htmlFileParent.resolve(src);
           if (Files.isRegularFile(srcFile)) {
             String ext     = FileUtil.extractExt(srcFile);
-            Path   imgFile = tmpWorkDir.resolve("img-" + StrUtil.toLen(imgFileIndex++, 5) + ext);
+            Path   imgFile = tmpWorkDir.resolve("img-" + StrUtil.toLen(++imgFileIndex, 5) + ext);
             FileUtil.copyFile(srcFile, imgFile);
             element.setAttribute("src", imgFile.toFile().getName());
           }
@@ -239,5 +154,82 @@ public class MdConverter implements AutoCloseable {
 
     FileUtil.saveFile(htmlFile, htmlText.substring("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".length()));
 
+    return htmlFileName;
+  }
+
+  private void copyResourceFiles() {
+    copyResource("/static/markdown.css", "markdown.css");
+    copyResource("/static/font.css", "font.css");
+    copyResource("/static/fonts/PTRootUI_Bold.woff", "fonts/PTRootUI_Bold.woff");
+    copyResource("/static/fonts/PTRootUI_Light.woff", "fonts/PTRootUI_Light.woff");
+    copyResource("/static/fonts/PTRootUI_Medium.woff", "fonts/PTRootUI_Medium.woff");
+    copyResource("/static/fonts/PTRootUI_Regular.woff", "fonts/PTRootUI_Regular.woff");
+    copyResource("/download/main.css", "main.css");
+  }
+
+  @SneakyThrows
+  private void copyResource(String resourceName, String destinationName) {
+    try (InputStream resourceAsStream = getClass().getResourceAsStream(resourceName)) {
+      requireNonNull(resourceAsStream, "P8fGOrj61L :: No resource " + resourceName);
+      Path targetFile = tmpWorkDir.resolve(destinationName);
+      targetFile.toFile().getParentFile().mkdirs();
+      Files.write(targetFile, resourceAsStream.readAllBytes());
+    }
+  }
+
+  public void convert() {
+    prepareMdFileList();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'_HH_mm_ss_SSS");
+    tmpWorkDir = tmpDir.toAbsolutePath().resolve("converter-" + sdf.format(new Date()));
+
+    copyResourceFiles();
+
+    htmlFileIndex = imgFileIndex = 0;
+
+    List<String> htmlFileNameList = new ArrayList<>();
+
+    for (final String mdFileName : mdFileList) {
+      Path mdFilePath = parentPath.resolve(mdFileName);
+      htmlFileNameList.add(prepareHtmlFileFrom(mdFilePath));
+    }
+
+    String caption = Toc.toCaption(toc.startDir, toc.targetExt);
+
+    List<String> cmd = new ArrayList<>();
+    cmd.add("pandoc");
+    cmd.add("--metadata");
+    //noinspection SpellCheckingInspection
+    cmd.add("pagetitle=\"" + caption.replaceAll("\"", "") + "\"");
+    cmd.add("--pdf-engine=wkhtmltopdf");
+    cmd.add("--css=font.css");
+    cmd.add("--css=main.css");
+    cmd.add("--css=markdown.css");
+
+    List<String> outL = new ArrayList<>();
+
+    Path resultPdf = tmpWorkDir.resolve("__output_ok__.pdf");
+    resultPdf.toFile().getParentFile().mkdirs();
+
+    outL.add("-o");
+    outL.add(resultPdf.toFile().getName());
+
+    {
+      Execute exec = Execute.of(tmpWorkDir, tmpWorkDir.resolve("__output_err__.txt"))
+                            .cmd(cmd)
+                            .cmd(outL)
+                            .cmd(htmlFileNameList)
+                            .execute();
+
+      if (exec.exitCode != 0) {
+        downloadFileName = "ERR-" + toc.uriNoSlash.replace('/', '_').replace('.', '_') + ".txt";
+        contentType      = ContentType.Text;
+        downloadFile     = exec.err();
+        return;
+      }
+    }
+
+    downloadFile     = resultPdf;
+    contentType      = ContentType.Pdf;
+    downloadFileName = caption + ".pdf";
   }
 }

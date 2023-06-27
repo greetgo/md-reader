@@ -27,3 +27,18 @@
   font-weight: normal;
   src: local('PTRootUI_Bold'), url('fonts/PTRootUI_Bold.woff') format('woff');
 }
+
+@font-face {
+  font-family: 'PT Root UI';
+  font-style: normal;
+  font-weight: normal;
+  src: local('PTRootUI_Regular'),
+  url('fonts/PTRootUI_Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'PT Root UI';
+  font-style: normal;
+  font-weight: bold;
+  src: local('PTRootUI_Bold'), url('fonts/PTRootUI_Bold.woff') format('woff');
+}

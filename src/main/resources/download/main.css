@@ -1,0 +1,12 @@
+body {
+  font-family: 'Liberation Sans Narrow', serif;
+}
+
+code {
+  font-family: "Liberation Mono", serif;
+  font-size: 88%;
+}
+
+pre {
+  margin-left: 2rem;
+}
