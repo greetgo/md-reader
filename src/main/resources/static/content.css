@@ -91,22 +91,36 @@
   padding-left: 3.5rem;
 }
 
+.search-line-mobile {
+  display: none;
+}
+
 @media only screen and (max-width: 768px) {
   .content {
-    top: 101px;
+    top: 97px;
     max-height: 110px;
     z-index: 1000;
+    padding-top: 5px;
   }
 
   .content .left {
     margin-left: 10px;
     max-height: 110px;
+    margin-bottom: 5px;
+  }
+
+  .search-line-mobile {
+    display: block;
+    position: fixed;
+    top: 62px;
+    z-index: 1000;
+    background-color: #2f80ed;
   }
 
   .main {
     width: 100%;
     display: flex;
-    margin-top: 211px;
+    margin-top: 246px;
   }
 
   .markdown, .dir-list, .no-file {

@@ -42,6 +42,15 @@
     <div class="search-line">
         <@yandex.searchLine />
     </div>
+    <div class="header-menu">
+        <#-- @formatter:off -->
+      <svg id="headerMenu" viewBox="0 0 341.333 341.333">
+        <g><g><rect y="277.333" width="341.333" height="42.667"/></g></g>
+        <g><g><rect y="149.333" width="341.333" height="42.667"/></g></g>
+        <g><g><rect y="21.333" width="341.333" height="42.667"/></g></g>
+      </svg>
+        <#-- @formatter:on -->
+    </div>
   </div>
 </#macro>
 <#macro breadcrumbs>
