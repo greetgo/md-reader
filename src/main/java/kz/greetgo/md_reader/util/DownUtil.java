@@ -8,7 +8,7 @@ import lombok.SneakyThrows;
 
 public class DownUtil {
 
-  private static final int BUFFER_SIZE = 32 * 1024;
+  private static final int BUFFER_SIZE = 8 * 1024;
 
   @SneakyThrows
   public static void downloadFile(HttpServletResponse response, Path downFile, ContentType contentType, String fileName) {
@@ -27,6 +27,7 @@ public class DownUtil {
         while (true) {
           int count = input.read(buffer, 0, BUFFER_SIZE);
           if (count < 0) {
+            output.flush();
             response.flushBuffer();
             return;
           }
@@ -34,7 +35,6 @@ public class DownUtil {
         }
       }
     }
-
 
   }
 

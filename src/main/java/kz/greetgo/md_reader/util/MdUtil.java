@@ -64,11 +64,21 @@ public class MdUtil {
     throw new RuntimeException("6UYkN537g2 :: Bo body");
   }
 
-  @SneakyThrows
   public static Document xmlTextToDoc(String html) {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder        builder = factory.newDocumentBuilder();
-    return builder.parse(new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8)));
+    try {
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder        builder = factory.newDocumentBuilder();
+      return builder.parse(new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8)));
+    } catch (Exception e) {
+      StringBuilder sb         = new StringBuilder();
+      int           n          = 1;
+      String[]      lines      = html.split("\n");
+      String        linesCount = "" + lines.length;
+      for (final String line : lines) {
+        sb.append(StrUtil.toLen(n++, linesCount.length())).append("  ").append(line).append("\n");
+      }
+      throw new RuntimeException("wXb6Vnl31u :: Ошибка для HTML=\n\n" + sb + "\n\n", e);
+    }
   }
 
   @SneakyThrows

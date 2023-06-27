@@ -44,6 +44,7 @@
     </div>
   </div>
 </#macro>
+
 <#macro breadcrumbs>
   <div class="breadcrumbs">
       <#--noinspection FtlReferencesInspection-->
@@ -64,9 +65,11 @@
         <a href="${item.reference}">${item.caption}</a>
       </div>
     </#list>
-<#--    <div class="download-toc">-->
-<#--      <a href="${tocDownloadReference}">Скачать в формате PDF</a>-->
-<#--    </div>-->
+  <div class="download-toc">
+    <span>Скачать в формате</span>
+    <a href="${tocDownloadReferencePDF}">PDF</a>
+    <a href="${tocDownloadReferenceDOCX}">DOCX</a>
+  </div>
 </#macro>
 
 <#macro footer>

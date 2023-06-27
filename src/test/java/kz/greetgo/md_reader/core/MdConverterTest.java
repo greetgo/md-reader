@@ -14,6 +14,7 @@ import kz.greetgo.md_reader.core.md_converter_data.MdConverterAnchor;
 import kz.greetgo.md_reader.util.ContentType;
 import kz.greetgo.md_reader.util.DomVisitor;
 import kz.greetgo.md_reader.util.MdUtil;
+import kz.greetgo.md_reader.util.RequestContentType;
 import kz.greetgo.md_reader.util.XmlDomVisiting;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -184,7 +185,7 @@ class MdConverterTest extends MdConverterTestParent {
 
   @Test
   @SneakyThrows
-  void convert() {
+  void convert_PDF() {
 
     file("some/pics/wow/buttonAddingNewProcess.png", res.asBytes("buttonAddingNewProcess.png"));
     file("some/pics/wow/status/sysctl-on-kubernetes.png", res.asBytes("sysctl-on-kubernetes.png"));
@@ -230,6 +231,7 @@ class MdConverterTest extends MdConverterTestParent {
     converter.toc.uriNoSlash = "some/toc10/inner/file2.md";
 
     converter.toc.populate();
+    converter.requestContentType = RequestContentType.PDF;
 
     //
     //
@@ -237,8 +239,69 @@ class MdConverterTest extends MdConverterTestParent {
     //
     //
 
-    assertThat(converter.contentType).isEqualTo(ContentType.Pdf);
+    assertThat(converter.downloadType).isEqualTo(ContentType.Pdf);
     assertThat(converter.downloadFile).exists();
-    assertThat(converter.downloadFileName).isNotNull().endsWith(".pdf");
+    assertThat(converter.downloadFileName).isNotNull().endsWith(ContentType.Pdf.dotExt);
+  }
+
+  @Test
+  @SneakyThrows
+  void convert_DOCX() {
+
+    file("some/pics/wow/buttonAddingNewProcess.png", res.asBytes("buttonAddingNewProcess.png"));
+    file("some/pics/wow/status/sysctl-on-kubernetes.png", res.asBytes("sysctl-on-kubernetes.png"));
+    file("some/toc2/file1.md", """
+      ## Супер заголовок
+            
+      Какой-то текст и ещё чё-то.
+            
+      <img width="" src="../pics/wow/buttonAddingNewProcess.png">
+            
+      Текст между картинками с <b>жирным</b> и <i>курсивным</i> <b><i>текстом</i></b>.
+            
+      ![](../pics/wow/status/sysctl-on-kubernetes.png)
+            
+      Это какая-то картинка
+            
+      ### Это подзаголовок
+            
+      Текст под подзаголовком. На карточку объекта можно добавлять неограниченное количество
+      вложенных объектов Департаменты и Пользователи. Подробно по вложенным объектам и их
+      настройкам описано во главе Вложенные объекты.
+            
+      """);
+
+    file("some/toc10/inner/pics/sixSettings.png", res.asBytes("sixSettings.png"));
+    file("some/toc10/inner/file2.md", """
+      ## Заголовок второго файла
+            
+      Текст второго файла.
+            
+      ![](pics/sixSettings.png)
+            
+      Это картинка второго файла.
+            
+      ### Это подзаголовок второго файла
+            
+      Текст под подзаголовком второго файла. Подчиненные - подчиненные автора, объекте,
+      будут иметь права на указанные операции при настройке прав, если автор указан как
+      руководитель в департаменте в которую он входит.
+            
+      """);
+
+    converter.toc.uriNoSlash = "some/toc10/inner/file2.md";
+
+    converter.toc.populate();
+    converter.requestContentType = RequestContentType.DOCX;
+
+    //
+    //
+    converter.convert();
+    //
+    //
+
+    assertThat(converter.downloadType).isEqualTo(ContentType.DocX);
+    assertThat(converter.downloadFile).exists();
+    assertThat(converter.downloadFileName).isNotNull().endsWith(ContentType.DocX.dotExt);
   }
 }

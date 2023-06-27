@@ -1,7 +1,9 @@
 package kz.greetgo.md_reader.core;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -15,24 +17,28 @@ import kz.greetgo.md_reader.model.TocItem;
 import kz.greetgo.md_reader.util.ContentType;
 import kz.greetgo.md_reader.util.FileUtil;
 import kz.greetgo.md_reader.util.MdUtil;
+import kz.greetgo.md_reader.util.RequestContentType;
 import kz.greetgo.md_reader.util.StrUtil;
 import kz.greetgo.md_reader.util.XmlDomVisiting;
 import lombok.SneakyThrows;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 import static kz.greetgo.md_reader.util.StrUtil.cutBorderSlash;
 
 public class MdConverter implements AutoCloseable {
   // input
-  public Path    tmpDir;
-  public Toc     toc;
-  public boolean clearTmpDir;
+  public Path               tmpDir;
+  public Toc                toc;
+  public boolean            clearTmpDir;
+  public RequestContentType requestContentType;
+  public String             requestExtension;
 
   // output
   public Path        downloadFile;
-  public ContentType contentType;
+  public ContentType downloadType;
   public String      downloadFileName;
 
   //inner
@@ -41,6 +47,8 @@ public class MdConverter implements AutoCloseable {
 
   final List<String> mdFileList = new ArrayList<>();
   Path parentPath;
+
+  public static final String REQUEST_EXTENSION = "request_extension";
 
   @Override
   @SneakyThrows
@@ -177,10 +185,16 @@ public class MdConverter implements AutoCloseable {
     }
   }
 
+  @SneakyThrows
   public void convert() {
     prepareMdFileList();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'_HH_mm_ss_SSS");
     tmpWorkDir = tmpDir.toAbsolutePath().resolve("converter-" + sdf.format(new Date()));
+
+    prepareRequestContentType();
+    if (downloadFile != null) {
+      return;
+    }
 
     copyResourceFiles();
 
@@ -188,9 +202,24 @@ public class MdConverter implements AutoCloseable {
 
     List<String> htmlFileNameList = new ArrayList<>();
 
-    for (final String mdFileName : mdFileList) {
-      Path mdFilePath = parentPath.resolve(mdFileName);
-      htmlFileNameList.add(prepareHtmlFileFrom(mdFilePath));
+    try {
+      for (final String mdFileName : mdFileList) {
+        Path mdFilePath = parentPath.resolve(mdFileName);
+        htmlFileNameList.add(prepareHtmlFileFrom(mdFilePath));
+      }
+    } catch (RuntimeException e) {
+      ByteArrayOutputStream forBytes = new ByteArrayOutputStream();
+      try (PrintStream out = new PrintStream(forBytes, false, UTF_8)) {
+        e.printStackTrace(out);
+      }
+
+      Path errFile = tmpWorkDir.resolve("__err__.txt");
+      Files.write(errFile, forBytes.toByteArray());
+
+      downloadFile     = errFile;
+      downloadFileName = "Ошибка генерации файла.txt";
+      downloadType     = ContentType.Text;
+      return;
     }
 
     String caption = Toc.toCaption(toc.startDir, toc.targetExt);
@@ -207,7 +236,7 @@ public class MdConverter implements AutoCloseable {
 
     List<String> outL = new ArrayList<>();
 
-    Path resultPdf = tmpWorkDir.resolve("__output_ok__.pdf");
+    Path resultPdf = tmpWorkDir.resolve("__output_ok__" + requestContentType.contentType.dotExt);
     resultPdf.toFile().getParentFile().mkdirs();
 
     outL.add("-o");
@@ -222,14 +251,45 @@ public class MdConverter implements AutoCloseable {
 
       if (exec.exitCode != 0) {
         downloadFileName = "ERR-" + toc.uriNoSlash.replace('/', '_').replace('.', '_') + ".txt";
-        contentType      = ContentType.Text;
+        downloadType     = ContentType.Text;
         downloadFile     = exec.err();
         return;
       }
     }
 
     downloadFile     = resultPdf;
-    contentType      = ContentType.Pdf;
-    downloadFileName = caption + ".pdf";
+    downloadType     = requestContentType.contentType;
+    downloadFileName = caption + requestContentType.contentType.dotExt;
+  }
+
+  @SneakyThrows
+  private void prepareRequestContentType() {
+    if (requestContentType != null) {
+      return;
+    }
+
+    if (requestExtension != null) {
+      try {
+        requestContentType = RequestContentType.valueOf(requestExtension.toUpperCase());
+      } catch (Exception ignore) {
+        requestContentType = null;
+      }
+    }
+
+    if (requestContentType == null) {
+      Path errTxt = tmpWorkDir.resolve("__err__.txt");
+      errTxt.toFile().getParentFile().mkdirs();
+
+      Files.writeString(errTxt, ""
+                          + "Не указан параметр " + REQUEST_EXTENSION + " в запросе или указан не верно\n\n"
+                          + "Укажите его верно. Он может приминать следующие значения:\n\n"
+                          + "    - " + RequestContentType.PDF + "  - скачать файл в формате PDF\n\n"
+                          + "    - " + RequestContentType.DOCX + " - скачать файл в формате DOCX\n",
+                        UTF_8);
+
+      downloadFile     = errTxt;
+      downloadType     = ContentType.Text;
+      downloadFileName = "Ошибка запроса.txt";
+    }
   }
 }

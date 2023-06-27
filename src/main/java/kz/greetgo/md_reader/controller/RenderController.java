@@ -27,6 +27,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.request.ServletWebRequest;
 
+import static kz.greetgo.md_reader.core.MdConverter.REQUEST_EXTENSION;
 import static kz.greetgo.md_reader.core.sitemap.Sitemap.SITEMAPS;
 
 @Log
@@ -91,7 +92,7 @@ public class RenderController {
       if (lowRequestUri.startsWith(prefix)) {
         String rest             = requestURI.substring(prefix.length());
         String uriNoBorderSlash = StrUtil.cutBorderSlash(rest);
-        return downloadToc(uriNoBorderSlash, response);
+        return downloadToc(uriNoBorderSlash, response, request.getParameter(REQUEST_EXTENSION));
       }
     }
 
@@ -187,7 +188,8 @@ public class RenderController {
     Toc toc = populateToc(uriNoBorderSlash);
 
     model.addAttribute("tocItems", toc.items);
-    model.addAttribute("tocDownloadReference", "/" + DOWNLOAD_TOC + "/" + uriNoBorderSlash);
+    model.addAttribute("tocDownloadReferencePDF", "/" + DOWNLOAD_TOC + "/" + uriNoBorderSlash + "?" + REQUEST_EXTENSION + "=PDF");
+    model.addAttribute("tocDownloadReferenceDOCX", "/" + DOWNLOAD_TOC + "/" + uriNoBorderSlash + "?" + REQUEST_EXTENSION + "=DOCX");
   }
 
   private String noFile(Path filePath, ServletWebRequest request, Model model, String uriNoBorderSlash) {
@@ -306,20 +308,21 @@ public class RenderController {
   }
 
   @SneakyThrows
-  private String downloadToc(String uriNoBorderSlash, HttpServletResponse response) {
+  private String downloadToc(String uriNoBorderSlash, HttpServletResponse response, String requestExtension) {
 
     Toc toc = populateToc(uriNoBorderSlash);
 
     try (MdConverter converter = new MdConverter()) {
-      converter.toc         = toc;
-      converter.tmpDir      = Env.tmpDir();
-      converter.clearTmpDir = Env.clearTmpDir();
+      converter.toc              = toc;
+      converter.tmpDir           = Env.tmpDir();
+      converter.clearTmpDir      = Env.clearTmpDir();
+      converter.requestExtension = requestExtension;
 
       converter.convert();
 
       DownUtil.downloadFile(response,
                             converter.downloadFile,
-                            converter.contentType,
+                            converter.downloadType,
                             converter.downloadFileName);
     }
 
