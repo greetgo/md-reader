@@ -1,14 +1,20 @@
 <#import "base.ftl" as base>
+<#import "yandex.ftl" as yandex>
+
 <!DOCTYPE html>
 <@base.layout>
 <@base.header/>
 <@base.breadcrumbs/>
-  <div class="content">
+  <div id="search-line-mobile" class="search-line-mobile">
+      <@yandex.searchLine />
+  </div>
+
+  <div id="content" class="content">
     <div class="left scroll-bar">
         <@base.toc/>
     </div>
   </div>
-  <div class="main">
+  <div id="main" class="main">
     <div class="dir-list">
       <div class="caption">${caption}</div>
       <div class="dir-list-items">
