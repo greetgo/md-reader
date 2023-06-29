@@ -79,10 +79,16 @@
 
 <#macro documents>
   <div class="download-toc">
-    <span>Выгрузить документацию:</span>
+    <span class="title">Скачать в формате:</span>
 
-    <a href="${tocDownloadReferencePDF}"><img src="../static/icons/pdf.svg" alt="pdf"/></a>
-    <a href="${tocDownloadReferenceDOCX}"><img src="../static/icons/word.svg" alt="word"/></a>
+    <a href="${tocDownloadReferencePDF}">
+      <span class="extension">PDF</span>
+      <img src="/static/icons/pdf.svg" alt="pdf"/>
+    </a>
+    <a href="${tocDownloadReferenceDOCX}">
+      <span class="extension">DOCX</span>
+      <img src="/static/icons/word.svg" alt="word"/>
+    </a>
   </div>
 </#macro>
 

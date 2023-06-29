@@ -69,14 +69,26 @@
   z-index: 100000;
 }
 
-.download-toc span {
+.download-toc a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+  transition: border-bottom 250ms;
+}
+.download-toc a:hover {
+  border-bottom: 1px dashed #525252;
+}
+
+.download-toc .title {
   cursor: default;
   user-select: none;
 }
 
-.download-toc img {
+.download-toc img, .download-toc .extension {
   margin-left: 5px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .content .left .selected {
@@ -148,15 +160,5 @@
     display: flex;
     margin-top: 101px;
     transition: margin-top 250ms;
-  }
-
-  .markdown, .dir-list, .no-file {
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
-  }
-
-  .markdown img {
-    width: 100% !important;
   }
 }
