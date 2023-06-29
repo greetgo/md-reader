@@ -23,7 +23,6 @@ public class TextReplaceFilter extends GenericFilterBean {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     skipConvert.set(false);
-    System.out.println("BR8r5R40G9 :: skip convert = false");
 
     String requestURI = ((HttpServletRequest) request).getRequestURI();
 
@@ -37,7 +36,6 @@ public class TextReplaceFilter extends GenericFilterBean {
       chain.doFilter(request, brw);
 
       if (skipConvert.get()) {
-        System.out.println("e4cs7DMQfJ :: CHECK: skip convert");
         response.getOutputStream().write(brw.getBytes());
         return;
       }

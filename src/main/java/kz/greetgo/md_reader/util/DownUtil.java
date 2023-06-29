@@ -15,7 +15,6 @@ public class DownUtil {
   public static void downloadFile(HttpServletResponse response, Path downFile, ContentType contentType, String fileName) {
 
     TextReplaceFilter.skipConvert();
-    System.out.println("LxMZ30AEV0 :: skip convert = true");
 
     response.setHeader(
       "Content-Disposition",
