@@ -9,6 +9,10 @@
       <@yandex.searchLine />
   </div>
 
+  <div>
+      <@base.documents/>
+  </div>
+
   <div id="content" class="content">
     <div class="left scroll-bar">
         <@base.toc/>

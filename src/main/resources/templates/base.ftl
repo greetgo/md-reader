@@ -75,10 +75,14 @@
         <a href="${item.reference}">${item.caption}</a>
       </div>
     </#list>
+</#macro>
+
+<#macro documents>
   <div class="download-toc">
-    <span>Скачать в формате</span>
-    <a href="${tocDownloadReferencePDF}">PDF</a>
-    <a href="${tocDownloadReferenceDOCX}">DOCX</a>
+    <span>Выгрузить документацию:</span>
+
+    <a href="${tocDownloadReferencePDF}"><img src="../static/icons/pdf.svg" alt="pdf"/></a>
+    <a href="${tocDownloadReferenceDOCX}"><img src="../static/icons/word.svg" alt="word"/></a>
   </div>
 </#macro>
 

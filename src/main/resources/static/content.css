@@ -55,6 +55,30 @@
   border-bottom: 1px dashed #ffffff;
 }
 
+.download-toc {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 14px;
+  background: white;
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 0 51px 8px rgb(34 60 80 / 20%);
+  z-index: 100000;
+}
+
+.download-toc span {
+  cursor: default;
+  user-select: none;
+}
+
+.download-toc img {
+  margin-left: 5px;
+  cursor: pointer;
+}
+
 .content .left .selected {
   font-weight: bold;
 }
