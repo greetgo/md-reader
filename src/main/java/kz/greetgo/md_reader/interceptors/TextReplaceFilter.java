@@ -17,8 +17,13 @@ import org.springframework.web.filter.GenericFilterBean;
 
 @Component
 public class TextReplaceFilter extends GenericFilterBean {
+
+  private static final ThreadLocal<Boolean> skipConvert = new ThreadLocal<>();
+
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    skipConvert.set(false);
+    System.out.println("BR8r5R40G9 :: skip convert = false");
 
     String requestURI = ((HttpServletRequest) request).getRequestURI();
 
@@ -31,12 +36,22 @@ public class TextReplaceFilter extends GenericFilterBean {
       ResponseConverter brw = new ResponseConverter((HttpServletResponse) response);
       chain.doFilter(request, brw);
 
+      if (skipConvert.get()) {
+        System.out.println("e4cs7DMQfJ :: CHECK: skip convert");
+        response.getOutputStream().write(brw.getBytes());
+        return;
+      }
+
       String str = new String(brw.getBytes(), StandardCharsets.UTF_8);
 
       response.getWriter().print(convertText(str));
       return;
     }
 
+  }
+
+  public static void skipConvert() {
+    skipConvert.set(true);
   }
 
   private static final Pattern PATTERN_OPEN1 = Pattern.compile("<\\s*a\\s+href\\s*=\\s*\"([^\"]+)\"\\s*>");

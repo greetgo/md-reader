@@ -4,6 +4,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.nio.file.Path;
+import kz.greetgo.md_reader.interceptors.TextReplaceFilter;
 import lombok.SneakyThrows;
 
 public class DownUtil {
@@ -12,6 +13,9 @@ public class DownUtil {
 
   @SneakyThrows
   public static void downloadFile(HttpServletResponse response, Path downFile, ContentType contentType, String fileName) {
+
+    TextReplaceFilter.skipConvert();
+    System.out.println("LxMZ30AEV0 :: skip convert = true");
 
     response.setHeader(
       "Content-Disposition",

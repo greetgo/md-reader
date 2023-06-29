@@ -1,6 +1,7 @@
 package kz.greetgo.md_reader.core.env;
 
 import java.util.Optional;
+import kz.greetgo.md_reader.util.StrUtil;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,16 +28,7 @@ class EnvReader {
   }
 
   public static boolean bool(String envName) {
-    return str(envName).map(EnvReader::strToBool).orElse(false);
+    return str(envName).map(StrUtil::strToBool).orElse(false);
   }
 
-  private static boolean strToBool(String str) {
-    if (str == null) {
-      return false;
-    }
-    return switch (str.trim()) {
-      case "y", "yes", "1", "true", "t" -> true;
-      default -> false;
-    };
-  }
 }

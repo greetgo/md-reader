@@ -32,4 +32,13 @@ public class StrUtil {
     return sb.toString();
   }
 
+  public static boolean strToBool(String str) {
+    if (str == null) {
+      return false;
+    }
+    return switch (str.trim()) {
+      case "y", "yes", "1", "true", "t" -> true;
+      default -> false;
+    };
+  }
 }

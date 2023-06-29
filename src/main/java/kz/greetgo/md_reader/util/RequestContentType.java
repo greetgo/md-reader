@@ -2,7 +2,7 @@ package kz.greetgo.md_reader.util;
 
 public enum RequestContentType {
   PDF(ContentType.Pdf),
-//  DOCX(ContentType.DocX),
+  DOCX(ContentType.DocX),
 
   ;
 
